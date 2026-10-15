@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draw2World AI — 발표</title>
+<meta name="description" content="이미지와 자연어로 하나의 3D 자산을 만들고 캐릭터·게임·3D 프린팅으로 연결하는 AI 3D 제작 플랫폼 발표 슬라이드">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- 아이콘 스프라이트 (직접 그린 단순 선 아이콘) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-5 4 4 3-3 6 6"/></symbol>
+    <symbol id="i-cut" viewBox="0 0 24 24"><path d="M4 4h5M4 4v5M20 4h-5M20 4v5M4 20h5M4 20v-5M20 20h-5M20 20v-5"/><path d="M9 15c0-3 1.5-6 3-6s3 3 3 6"/></symbol>
+    <symbol id="i-views" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></symbol>
+    <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><path d="M12 8v6M7 10l5 1 5-1M12 14l-3 6M12 14l3 6"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M3 15v-3l2.5-4h9l3 4H21v3z"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M4 4h16v4H4z"/><path d="M6 8v12h12V8"/><path d="M12 11v3M9 17h6"/><path d="M10 14h4l-2 2z"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 13V6a1.5 1.5 0 013 0v5M11 11V4.5a1.5 1.5 0 013 0V11M14 11V6a1.5 1.5 0 013 0v7c0 4-2.5 7-6 7-2.5 0-4-1.5-5.5-4L4 13a1.5 1.5 0 012.5-1.5L8 13"/></symbol>
+    <symbol id="i-gpu" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="1"/><circle cx="9" cy="12" r="2.5"/><path d="M15 10h3M15 14h3M6 17v2M10 17v2M14 17v2"/></symbol>
+  </defs>
+</svg>
+
+<div class="deck" id="deck" aria-roledescription="프레젠테이션">
+<div class="stage" id="stage">
+
+<!-- ============ 01 오프닝 ============ -->
+<section class="slide s-opening" aria-label="1. 오프닝" data-title="오프닝">
+  <div class="opening-left">
+    <p class="brand">Draw2World <span>AI</span></p>
+    <h1>상상을 3D로,<br>3D를 디지털과 현실로</h1>
+    <p class="lead">이미지와 자연어로 <strong>하나의 3D 자산</strong>을 만들고, 목적에 맞게 가공해 캐릭터 인터랙션·게임·3D 프린팅으로 연결하는 AI 3D 제작 플랫폼</p>
+    <p class="meta">SSAFY 프로젝트 발표 · 2026.10</p>
+  </div>
+  <div class="opening-visual" role="img" aria-label="그림 한 장이 하나의 3D 자산을 거쳐 캐릭터, 게임 차량, 실물 미니어처 세 갈래로 분기되는 개념도">
+    <svg class="links" viewBox="0 0 760 640" aria-hidden="true">
+      <path d="M220 320 H260"/>
+      <path d="M450 320 C500 320 490 110 540 110"/>
+      <path d="M450 320 H540"/>
+      <path d="M450 320 C500 320 490 530 540 530"/>
+    </svg>
+    <div class="ov-node ov-src" style="left:0;top:262px"><svg><use href="#i-image"/></svg><b>그림 한 장</b><small>이미지 · 스케치</small></div>
+    <div class="ov-node ov-core" style="left:260px;top:225px"><svg><use href="#i-cube"/></svg><b>하나의<br>3D 자산</b><small>AI 추정 초안<br>→ 확인·수정</small></div>
+    <div class="ov-node ov-out c-char" style="left:540px;top:55px"><svg><use href="#i-person"/></svg><b>캐릭터</b><small>내 동작을 따라 움직임</small></div>
+    <div class="ov-node ov-out c-car" style="left:540px;top:265px"><svg><use href="#i-car"/></svg><b>게임 자산</b><small>레이싱 트랙 위를 달림</small></div>
+    <div class="ov-node ov-out c-print" style="left:540px;top:475px"><svg><use href="#i-print"/></svg><b>실물 모형</b><small>미니어처로 출력</small></div>
+  </div>
+  <aside class="notes">
+    안녕하세요, Draw2World AI입니다. 저희가 만드는 것은 게임 하나, 기능 하나가 아니라 하나의 제작 흐름입니다.
+    그림 한 장을 넣으면 AI가 3D 초안을 만들고, 사용자가 확인·수정한 그 자산 하나를 캐릭터로, 게임 속 차량으로, 실물 모형으로 보냅니다.
+    오늘 발표 내내 보실 그림은 이 화면 하나입니다. 왼쪽은 공통 파이프라인, 오른쪽은 그 결과가 쓰이는 세 곳입니다.
+  </aside>
+</section>
+
+<!-- ============ 02 문제 정의 ============ -->
+<section class="slide" aria-label="2. 문제 정의" data-title="문제 정의">
+  <header class="sh"><p class="kicker">01 · 문제</p><h2>3D는 만들기도, 쓰기도 어렵다</h2></header>
+  <div class="problem">
+    <ol class="problem-list">
+      <li><b>높은 진입장벽</b><span>모델링·리깅·최적화마다 다른 전문 도구와 숙련이 필요하다</span></li>
+      <li><b>이미지에 없는 정보</b><span>그림 한 장에는 뒷면·옆면·깊이가 없다 — 누군가는 추정해야 한다</span></li>
+      <li><b>생성 이후의 단절</b><span>3D가 나와도 리깅·충돌체·출력 검사는 다시 수작업이다</span></li>
+    </ol>
+    <figure class="broken" role="img" aria-label="기존 워크플로: 생성, 리깅, 게임 엔진, 슬라이서가 각각 분리되어 파일 변환과 재작업이 반복되는 구조">
+      <figcaption>기존 방식 — 생성과 활용이 도구별로 끊겨 있다</figcaption>
+      <div class="broken-row">
+        <div class="tool"><svg><use href="#i-cube"/></svg>3D 생성 도구</div>
+        <div class="gap" aria-hidden="true"><i></i><em>파일 변환</em></div>
+        <div class="tool"><svg><use href="#i-person"/></svg>리깅 도구</div>
+        <div class="gap" aria-hidden="true"><i></i><em>재작업</em></div>
+        <div class="tool"><svg><use href="#i-car"/></svg>게임 엔진</div>
+        <div class="gap" aria-hidden="true"><i></i><em>수동 검사</em></div>
+        <div class="tool"><svg><use href="#i-print"/></svg>슬라이서</div>
+      </div>
+      <p class="broken-q">“생성은 됐는데, 이걸 어디에 어떻게 쓰지?”</p>
+    </figure>
+  </div>
+  <aside class="notes">
+    문제는 세 가지입니다. 첫째, 3D 제작은 단계마다 다른 전문 도구가 필요합니다.
+    둘째, 이미지 한 장에는 보이지 않는 면과 깊이가 없습니다. 이건 AI든 사람이든 추정할 수밖에 없는 부분입니다.
+    셋째, 가장 크게 느낀 문제는 생성 이후입니다. 3D 생성 도구는 많지만, 결과물을 리깅하고 충돌체를 만들고 출력 가능한지 검사하는 일은 다시 각각의 도구로 넘어가야 합니다.
+  </aside>
+</section>
+
+<!-- ============ 03 해법: 파이프라인 ============ -->
+<section class="slide" aria-label="3. 우리의 해법 — 공통 파이프라인" data-title="우리의 해법">
+  <header class="sh"><p class="kicker">02 · 해법</p><h2>하나의 파이프라인, 세 가지 결과</h2></header>
+  <div class="flow3" role="img" aria-label="공통 AI 3D 제작 파이프라인 6단계가 목적별 출력 프로필 3갈래(캐릭터, 차량·게임, 3D 프린팅)로 분기되는 다이어그램">
+    <p class="band band-pipe">공통 AI 3D 제작 파이프라인</p>
+    <p class="band band-out">목적별 출력 프로필</p>
+    <svg class="links" viewBox="0 0 1680 620" aria-hidden="true">
+      <path d="M1218 325 H1250 C1280 325 1268 145 1300 145"/>
+      <path d="M1218 325 H1300"/>
+      <path d="M1218 325 H1250 C1280 325 1268 505 1300 505"/>
+    </svg>
+    <div class="steps">
+      <div class="step"><i>01</i><svg><use href="#i-image"/></svg><b>이미지·그림 입력</b><small>사진·그림·다방향 이미지</small><span class="badge done">완료</span></div>
+      <div class="step"><i>02</i><svg><use href="#i-cut"/></svg><b>객체 분리·입력 보정</b><small>배경 분리, 방향·배율 보정</small><span class="badge done">완료</span></div>
+      <div class="step"><i>03</i><svg><use href="#i-views"/></svg><b>AI 다방향 설계도</b><small>5면 정렬·정합성 검증</small><span class="badge done">완료</span></div>
+      <div class="step"><i>04</i><svg><use href="#i-chat"/></svg><b>자연어 설계 수정</b><small>명령 JSON → 검증 → 적용</small><span class="badge wip">진행 중</span></div>
+      <div class="step"><i>05</i><svg><use href="#i-cube"/></svg><b>3D 모델 생성</b><small>실루엣 복원 + AI Adapter</small><span class="badge done">완료</span></div>
+      <div class="step"><i>06</i><svg><use href="#i-check"/></svg><b>품질 검사·보정</b><small>재투영·토폴로지 검사</small><span class="badge wip">진행 중</span></div>
+    </div>
+    <div class="outs">
+      <div class="out c-char"><svg><use href="#i-person"/></svg><div><b>캐릭터</b><small>리깅 → MediaPipe 동작 인식 → 미니게임</small></div></div>
+      <div class="out c-car"><svg><use href="#i-car"/></svg><div><b>차량·게임 자산</b><small>크기·방향·충돌체·폴리곤 → 레이싱</small></div></div>
+      <div class="out c-print"><svg><use href="#i-print"/></svg><div><b>3D 프린팅</b><small>STL · 수밀·두께·크기 검사 → 미니어처</small></div></div>
+    </div>
+  </div>
+  <p class="legend"><span class="badge done">완료</span> main 브랜치에 구현·테스트 <span class="badge wip">진행 중</span> 작업 브랜치·부분 구현 <span class="badge plan">계획</span> 미구현 — 이후 모든 슬라이드에 같은 기준 적용</p>
+  <aside class="notes">
+    저희의 해법은 이 한 장입니다. 왼쪽 여섯 단계는 무엇을 만들든 똑같이 거치는 공통 파이프라인이고, 마지막에만 목적에 맞는 출력 프로필로 갈라집니다.
+    캐릭터, 레이싱, 3D 프린팅은 세 개의 프로젝트가 아니라 같은 자산을 다르게 가공한 세 가지 결과입니다.
+    배지는 실제 상태입니다. 초록은 main에 구현된 것, 주황은 브랜치에서 진행 중이거나 부분 구현된 것, 회색 점선은 아직 계획입니다.
+  </aside>
+</section>
+
+<!-- ============ 04 사용자 경험 ============ -->
+<section class="slide" aria-label="4. 핵심 사용자 경험" data-title="사용자 경험">
+  <header class="sh"><p class="kicker">03 · 사용자 경험</p><h2>그리고, 말하고, 확인한다</h2></header>
+  <div class="ux">
+    <div class="ux-col">
+      <div class="ux-panel ph" data-ph="사용자 그림 1장 (캐릭터 또는 차량 스케치)"><svg class="ph-icon"><use href="#i-image"/></svg></div>
+      <p class="ux-cap"><i>1</i>이미지 입력<small>그림·사진 한 장 또는 여러 방향 이미지</small></p>
+    </div>
+    <div class="ux-col">
+      <div class="ux-panel views-mini" aria-label="AI가 제안한 다방향 설계도 초안 예시: 정면, 측면, 상단">
+        <figure><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="20" y="30" width="80" height="26" rx="8"/><rect x="36" y="18" width="48" height="16" rx="6"/><rect x="18" y="52" width="14" height="14" rx="3"/><rect x="88" y="52" width="14" height="14" rx="3"/></svg><figcaption>정면</figcaption></figure>
+        <figure><svg viewBox="0 0 120 80" aria-hidden="true"><path d="M8 52 L14 38 L40 34 L54 22 L84 22 L98 34 L112 38 L112 52 Z"/><circle cx="30" cy="56" r="9"/><circle cx="92" cy="56" r="9"/></svg><figcaption>측면</figcaption></figure>
+        <figure><svg viewBox="0 0 120 80" aria-hidden="true"><rect x="12" y="20" width="96" height="40" rx="14"/><rect x="44" y="26" width="34" height="28" rx="6"/></svg><figcaption>상단</figcaption></figure>
+        <p class="draft-tag">AI 추정 초안</p>
+      </div>
+      <p class="ux-cap"><i>2</i>다방향 설계도 초안<small>보이지 않는 면은 AI가 추정 → 사용자가 확인</small></p>
+    </div>
+    <div class="ux-col">
+      <div class="ux-panel chat" aria-label="자연어 수정 요청 예시">
+        <p class="bubble">귀를 조금 짧게</p>
+        <p class="bubble">차체를 낮게</p>
+        <p class="bubble">폭을 10% 늘려줘</p>
+        <p class="bubble sys">width × 1.10 적용 · v3 저장</p>
+      </div>
+      <p class="ux-cap"><i>3</i>자연어로 수정<small>요청은 검증 가능한 명령으로 변환 <span class="badge wip">진행 중</span></small></p>
+    </div>
+    <div class="ux-col">
+      <div class="ux-panel ph" data-ph="3D 뷰어 화면 캡처 (/viewer, 생성 모델 회전)"><svg class="ph-icon"><use href="#i-cube"/></svg></div>
+      <p class="ux-cap"><i>4</i>3D 생성·확인<small>원본 5면과 겹쳐 비교한 점수 함께 표시</small></p>
+    </div>
+  </div>
+  <p class="callout">결과는 <b>“완벽한 3D 복원”이 아니라 AI가 추정한 3D 초안</b>입니다. 사용자가 보고, 고치고, 확정합니다.</p>
+  <aside class="notes">
+    사용자 입장에서는 네 단계입니다. 그림을 넣고, AI가 정면·측면·상단 설계도 초안을 제안하고, 사용자가 말로 고치고, 3D로 확인합니다.
+    여기서 중요한 단어는 ‘초안’입니다. 그림에 없는 뒷면은 AI가 추정한 것이기 때문에, 저희는 결과를 정답처럼 보여주지 않고 원본과 얼마나 맞는지 점수와 함께 보여줍니다.
+    자연어 수정은 CAD 쪽에서 구조를 먼저 검증했고, 이미지로 만든 자산에 연결하는 작업이 진행 중입니다.
+  </aside>
+</section>
+
+<!-- ============ 05 설계도를 쓰는 이유 ============ -->
+<section class="slide" aria-label="5. 다방향 설계도를 사용하는 이유" data-title="설계도를 쓰는 이유">
+  <header class="sh"><p class="kicker">04 · 핵심 아이디어</p><h2>왜 ‘설계도’부터 만드는가</h2></header>
+  <div class="why">
+    <table class="axes" aria-label="뷰별로 결정되는 치수">
+      <thead><tr><th scope="col">뷰</th><th scope="col">결정하는 치수</th><th scope="col">축</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">정면</th><td>폭 · 높이</td><td>X · Y</td></tr>
+        <tr><th scope="row">측면</th><td>깊이 · 높이</td><td>Z · Y</td></tr>
+        <tr><th scope="row">상단</th><td>폭 · 깊이</td><td>X · Z</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="3">공유 축은 뷰끼리 서로 검증 — 어긋나면 생성 전에 경고</td></tr></tfoot>
+    </table>
+    <div class="compare">
+      <figure>
+        <svg viewBox="0 0 300 260" role="img" aria-label="정면 실루엣만 앞뒤로 밀어낸 단순 돌출 모델: 앞뒤가 평평한 판 형태">
+          <defs><linearGradient id="gx" x1="0" x2="1"><stop offset="0" stop-color="#3a4256"/><stop offset="1" stop-color="#2a3040"/></linearGradient></defs>
+          <ellipse cx="150" cy="232" rx="90" ry="12" fill="#000" opacity=".35"/>
+          <path d="M74.7 79.5 L134.7 44.5 A70 70 0 0 1 205.3 165.5 L145.3 200.5 Z" fill="url(#gx)" stroke="#5d6577" stroke-width="2"/>
+          <circle cx="110" cy="140" r="70" fill="#4a5470" stroke="#7a849b" stroke-width="2"/>
+          <text x="110" y="146" text-anchor="middle" fill="#c4cad6" font-size="15">정면 실루엣</text>
+        </svg>
+        <figcaption><b>단순 돌출</b>정면 하나를 밀어냄 → 앞뒤가 평평한 판</figcaption>
+      </figure>
+      <p class="vs">vs</p>
+      <figure>
+        <svg viewBox="0 0 300 260" role="img" aria-label="정면, 측면, 상단 실루엣의 교집합으로 만든 둥근 볼륨">
+          <defs><radialGradient id="gs" cx="0.38" cy="0.35" r="0.75"><stop offset="0" stop-color="#b7c8ff"/><stop offset="0.45" stop-color="#6f8fe8"/><stop offset="1" stop-color="#2d3a78"/></radialGradient></defs>
+          <ellipse cx="150" cy="232" rx="78" ry="12" fill="#000" opacity=".35"/>
+          <circle cx="150" cy="130" r="92" fill="url(#gs)"/>
+          <ellipse cx="150" cy="130" rx="92" ry="30" fill="none" stroke="#c9d6ff" stroke-opacity=".35" stroke-dasharray="5 6"/>
+          <ellipse cx="150" cy="130" rx="30" ry="92" fill="none" stroke="#c9d6ff" stroke-opacity=".35" stroke-dasharray="5 6"/>
+        </svg>
+        <figcaption><b>다방향 교집합 볼륨</b>정면 ∩ 측면 ∩ 상단 → 둥근 입체</figcaption>
+      </figure>
+    </div>
+    <div class="why-facts">
+      <p class="fact"><span class="num">99.32%</span><span>합성 구(sphere) 5면 → 복원 후 실루엣 IoU<small>합성 GT 회귀 · 2026-10-13 · 작업 브랜치</small></span></p>
+      <p class="fact"><span class="num">곡면 보정</span><span>캐릭터 모드: 수평 단면을 정면 폭 × 측면 깊이에 내접하는 타원으로 제한</span></p>
+      <p class="limit"><b>한계</b> 어느 방향에서도 보이지 않는 오목부(컵 안쪽, 콕핏 안쪽)는 채워진다 — 원리적으로 실루엣만으로는 알 수 없는 영역이며, 추정임을 표시한다.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    왜 바로 3D를 만들지 않고 설계도를 거칠까요. 정면은 폭과 높이, 측면은 깊이와 높이, 상단은 폭과 깊이를 정합니다. 공유하는 축이 있어서 세 장이 서로를 검증합니다.
+    정면 하나만 밀어내면 옆에서 봤을 때 판이 됩니다. 세 방향의 교집합을 쓰면 둥근 볼륨이 나옵니다. 합성 구로 시험했을 때 재투영 실루엣 일치도는 99.32%였습니다.
+    다만 한계도 분명합니다. 어느 방향에서도 보이지 않는 오목한 부분은 실루엣으로 알 수 없습니다. 저희는 그 부분을 추정이라고 표시합니다.
+  </aside>
+</section>
+
+<!-- ============ 06 AI·오픈소스 구조 ============ -->
+<section class="slide" aria-label="6. AI·오픈소스 기술 구조" data-title="기술 구조">
+  <header class="sh"><p class="kicker">05 · 기술 구조</p><h2>모델마다 맡은 역할이 있다</h2></header>
+  <div class="arch">
+    <div class="lane">
+      <h3>입력·이해</h3>
+      <div class="chip done"><b>배경 분리</b><span>alpha 또는 테두리 플러드필 키잉 + 누수 봉합</span></div>
+      <div class="chip done"><b>sharp</b><span>이미지 디코드·마스크·회전/반전/crop</span></div>
+      <div class="chip plan"><b>SAM2 · GrabCut · OpenCV</b><span>복잡한 배경 분리 후보 — 비교 측정 예정</span></div>
+    </div>
+    <div class="lane">
+      <h3>정렬·검증</h3>
+      <div class="chip done"><b>5면 정렬</b><span>뷰별 배율 log 최소제곱 공동 추정, 90° 회전 의심 탐지</span></div>
+      <div class="chip done"><b>정합성 점수</b><span>축 비율 · 거친 hull 재투영 IoU · 중심 · 대칭</span></div>
+    </div>
+    <div class="lane">
+      <h3>3D 생성</h3>
+      <div class="chip done"><b>SDF visual hull</b><span>Surface Nets + 변위 제한 Taubin 스무딩</span></div>
+      <div class="chip done"><b>이미지→3D Adapter</b><span>TRELLIS(MIT) · InstantMesh(Apache-2.0) · Hunyuan3D-2mv</span></div>
+      <div class="chip plan"><b>TripoSR 등</b><span>같은 Adapter 인터페이스로 추가 예정</span></div>
+    </div>
+    <div class="lane">
+      <h3>편집·품질</h3>
+      <div class="chip done"><b>로컬 LLM</b><span>Qwen2.5-1.5B → DesignSpec JSON → Pydantic 검증</span></div>
+      <div class="chip done"><b>CadQuery · OCCT</b><span>명령을 결정론적 형상으로, STL/STEP</span></div>
+      <div class="chip wip"><b>Manifold</b><span>비다양체 감지 시 level-set 재추출</span></div>
+    </div>
+    <div class="lane">
+      <h3>활용</h3>
+      <div class="chip done"><b>Three.js</b><span>뷰어 · CAD 편집기 · 레이싱 렌더링</span></div>
+      <div class="chip done"><b>MediaPipe Hands</b><span>손 랜드마크 → 제스처·조향 입력</span></div>
+      <div class="chip done"><b>Rapier</b><span>WASM 물리 — 차량 충돌·서스펜션</span></div>
+    </div>
+  </div>
+  <div class="arch-foot">
+    <p><svg><use href="#i-gpu"/></svg><b>로컬 GPU 추론</b> RTX 4060 8GB에서 LLM 실측 — 최대 VRAM 2,963.8 MiB, 외부 LLM API 없음</p>
+    <p><b>라이선스 점검</b> Hunyuan3D-2mv는 커뮤니티 라이선스상 한국 지역이 제외되어 <b>기본 비활성</b>, 기본 공급자는 TRELLIS</p>
+  </div>
+  <aside class="notes">
+    기술 구조는 모델 이름보다 역할로 봐 주십시오. 입력 단계에서는 배경을 분리하고, 정렬 단계에서는 다섯 장이 같은 물체를 가리키는지 먼저 검사합니다.
+    생성은 두 경로입니다. 외곽이 곧 형상인 물체는 실루엣 거리장으로, 볼이나 코처럼 안쪽 형상이 있는 캐릭터는 이미지→3D 모델 결과를 받아 실루엣 범위 안으로 보정합니다. 모델은 Adapter 뒤에 있어서 교체할 수 있습니다.
+    오픈소스를 쓸 때 라이선스도 확인했습니다. Hunyuan3D-2mv는 라이선스상 한국이 사용 지역에서 빠져 있어 기본으로 꺼 두었습니다. SAM2와 GrabCut 비교는 아직 측정 전입니다.
+  </aside>
+</section>
+
+<!-- ============ 07 자연어 3D 편집 ============ -->
+<section class="slide" aria-label="7. 자연어 3D 편집" data-title="자연어 편집">
+  <header class="sh"><p class="kicker">06 · 자연어 편집</p><h2>LLM은 버텍스를 만들지 않는다</h2></header>
+  <div class="nl">
+    <ol class="nl-flow" aria-label="자연어 편집 처리 순서">
+      <li><b>자연어 요청</b><span>“폭을 10% 늘려줘”</span></li>
+      <li><b>구조화 명령 JSON</b><span>로컬 LLM이 DesignSpec만 생성 — 코드 실행 없음</span></li>
+      <li><b>범위·제약 검증</b><span>단위 mm · 0.1~10,000mm · ID 중복 · 참조 무결성</span></li>
+      <li><b>결정론적 형상 변경</b><span>CadQuery가 같은 명세 → 같은 형상</span></li>
+      <li><b>버전 이력</b><span>필드별 diff · SQLite 저장 · 이전 버전 복원</span></li>
+    </ol>
+    <div class="nl-code">
+      <p class="code-h">DesignSpec (요약)</p>
+<pre aria-label="DesignSpec JSON 예시"><code>{
+  <k>"schema_version"</k>: <s>"1.0"</s>,
+  <k>"unit"</k>: <s>"mm"</s>,
+  <k>"name"</k>: <s>"desk"</s>,
+  <k>"parts"</k>: [{
+    <k>"id"</k>: <s>"top"</s>,
+    <k>"primitive"</k>: <s>"box"</s>,
+    <k>"dimensions"</k>: {
+      <k>"x"</k>: <del>1200</del><ins>1320</ins>,
+      <k>"y"</k>: 600, <k>"z"</k>: 25
+    },
+    <k>"position"</k>: { <k>"x"</k>: 0, <k>"y"</k>: 0, <k>"z"</k>: 725 }
+  }, …]
+}</code></pre>
+      <p class="diff">diff v2 → v3 · <code>parts[top].dimensions.x</code> 1200 → 1320</p>
+    </div>
+    <div class="nl-side">
+      <div class="ba" role="img" aria-label="적용 전후 비교: 상판 폭 1200mm에서 1320mm로 증가">
+        <svg viewBox="0 0 420 170" aria-hidden="true">
+          <g class="ba-before"><rect x="20" y="40" width="150" height="12" rx="2"/><rect x="28" y="52" width="8" height="70"/><rect x="154" y="52" width="8" height="70"/><text x="95" y="150">v2 · 1200</text></g>
+          <path d="M190 85 h30 m-8 -7 l8 7 -8 7" class="ba-arrow"/>
+          <g class="ba-after"><rect x="240" y="40" width="165" height="12" rx="2"/><rect x="248" y="52" width="8" height="70"/><rect x="389" y="52" width="8" height="70"/><text x="322" y="150">v3 · 1320</text></g>
+        </svg>
+      </div>
+      <div class="reject">
+        <p class="reject-h">잘못된 요청은 거절한다</p>
+        <p><code>부품 id 가 중복입니다: 'legs'</code></p>
+        <p><code>치수는 0.1mm 이상이어야 합니다</code></p>
+        <small>실패 원인을 모델에 돌려 최대 3회 교정 · 조용히 기본값으로 바꾸지 않음</small>
+      </div>
+    </div>
+  </div>
+  <div class="nl-foot">
+    <p class="fact"><span class="num">80% → 90%</span><span>자연어 → 유효 DesignSpec 성공률 (20문항, 1차 → 교정 재시도 포함)<small>로컬 Qwen2.5-1.5B · RTX 4060 · 2026-10-14</small></span></p>
+    <p class="nl-status"><span><span class="badge done">완료</span> 원시 형상 CAD — 박스·원기둥·불리언, STL/STEP</span><span><span class="badge plan">계획</span> 이미지 기반 자산(귀·차체)에 같은 구조 연결</span></p>
+  </div>
+  <aside class="notes">
+    자연어 편집에서 가장 강조하고 싶은 점은, LLM이 직접 정점을 만들지 않는다는 것입니다. LLM은 정해진 스키마의 명령 JSON만 만들고, 그 JSON은 단위, 치수 범위, 부품 ID 중복, 참조 무결성 검사를 통과해야 합니다.
+    통과한 명령만 CadQuery가 결정론적으로 형상에 반영하고, 버전마다 필드별 차이가 저장되어 언제든 되돌릴 수 있습니다.
+    오른쪽 아래 오류 문구는 실제 시스템이 낸 메시지입니다. 실패를 기본값으로 덮지 않습니다.
+    현재는 박스·원기둥 같은 원시 형상 CAD에서 완료됐고, 이미지로 만든 캐릭터·차량 자산에 같은 구조를 연결하는 것이 다음 작업입니다.
+  </aside>
+</section>
+
+<!-- ============ 08 품질 검사 ============ -->
+<section class="slide" aria-label="8. 품질 검사와 보정" data-title="품질 검사">
+  <header class="sh"><p class="kicker">07 · 품질</p><h2>생성 성공 ≠ 사용 가능</h2></header>
+  <div class="qa">
+    <table class="checks" aria-label="메시 품질 검사 항목과 구현 상태">
+      <thead><tr><th scope="col">검사 항목</th><th scope="col">무엇을 보나</th><th scope="col">상태</th></tr></thead>
+      <tbody>
+        <tr><td>재투영 일치</td><td>5면 원본 vs 재렌더 실루엣 IoU · 색 일치도</td><td><span class="badge done">완료</span></td></tr>
+        <tr><td>비다양체(non-manifold)</td><td>edge 수 감지 → Manifold 재추출</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>구멍(경계 edge)</td><td>열린 경계 edge 수</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>분리 조각</td><td>연결 성분 수 · 퇴화 삼각형</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>중심·크기</td><td>공통 XYZ 배율·중심 자동 보정</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>폴리곤 수</td><td>삼각형 수 기록 / 감량은 계획</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>노멀 · 바닥면</td><td>법선 방향 일관성 · 접지면 정렬</td><td><span class="badge plan">계획</span></td></tr>
+      </tbody>
+    </table>
+    <div class="qa-right">
+      <p class="chart-h">접합부 보정 전후 · 실물 5면 세트(투명 고양이)</p>
+      <div class="kpi-pair">
+        <div class="kpi"><small>비다양체 edge</small><p><s>336</s><span>→</span><b>0</b></p></div>
+        <div class="kpi"><small>실루엣 IoU</small><p><s>94.9%</s><span>→</span><b>94.88%</b></p></div>
+        <div class="kpi cost"><small>처리 시간 (비용)</small><p><s>20.3s</s><span>→</span><b>26.63s</b></p></div>
+      </div>
+      <p class="kpi-note">형상 점수 유지(85.0 → 85.03%), 삼각형 593,740 → 768,214개. 결함이 감지된 메시에서만 실행.</p>
+      <div class="ph ph-wide" data-ph="원본 메시 vs 보정 메시 렌더 비교 (비다양체 edge 빨간 표시)"></div>
+      <p class="callout small">품질 보고서를 결과와 함께 준다 — <b>“만들어졌다”가 아니라 “어디에 써도 되는가”</b>를 알려주는 것이 차별점</p>
+    </div>
+  </div>
+  <aside class="notes">
+    AI 3D에서 자주 간과되는 점이 있습니다. 메시가 생성됐다고 쓸 수 있는 건 아닙니다. 구멍이 있으면 출력이 안 되고, 비다양체 edge가 있으면 게임 엔진과 슬라이서에서 문제가 생깁니다.
+    그래서 저희는 원본과의 재투영 일치도와 메시 토폴로지를 분리해서 채점합니다. 실제 고양이 5면 세트에서 비다양체 edge 336개를, 형상 점수를 희생하지 않고 0개로 만들었습니다. 대신 처리 시간과 삼각형 수가 늘었다는 것도 그대로 보여드립니다.
+    토폴로지 검사와 보정은 작업 브랜치에 있고 main 병합 전이며, 노멀과 바닥면 검사는 계획입니다.
+  </aside>
+</section>
+
+<!-- ============ 09 활용 A — 캐릭터 ============ -->
+<section class="slide branch-slide c-char" aria-label="9. 활용 데모 A — 캐릭터" data-title="활용 A · 캐릭터">
+  <header class="sh"><p class="kicker"><span class="pill">출력 프로필 A</span> 캐릭터</p><h2>내 그림이 내 동작을 따라 한다</h2></header>
+  <ol class="bflow" aria-label="캐릭터 출력 프로필 흐름">
+    <li class="from"><b>공통 파이프라인</b><span>3D 캐릭터 자산</span></li>
+    <li><b>관절 지정</b><span>사용자가 확인·수정</span><em class="badge plan">계획</em></li>
+    <li><b>리깅</b><span>자동(UniRig 후보) · 수동</span><em class="badge plan">계획</em></li>
+    <li><b>MediaPipe</b><span>손 인식 완료 · 몸 인식</span><em class="badge wip">진행 중</em></li>
+    <li><b>미니게임</b><span>내 캐릭터로 플레이</span><em class="badge plan">계획</em></li>
+  </ol>
+  <div class="bstage">
+    <div class="ph ph-hero" data-ph="팀원 데모 화면: 웹캠 손·몸 랜드마크 ↔ 캐릭터 포즈 동기화 (관절·인식·게임 기능 캡처 삽입)"><svg class="ph-icon"><use href="#i-hand"/></svg></div>
+    <div class="bfacts">
+      <p class="fact"><span class="num">11 ms</span><span>손 랜드마크 추출 p50 (p95 31 ms)<small>MediaPipe 샘플 손 사진 · 가짜 카메라 · headless Chrome</small></span></p>
+      <p class="fact"><span class="num">37 ms</span><span>프레임 → 명령 p95<small>One Euro 필터 + 3프레임 유지 상태 머신</small></span></p>
+      <p class="limit"><b>검증 범위</b> 합성·샘플 데이터 기준. 실제 사람 손 녹화(7명 × 4동작 × 조명 3)는 수집 예정. 자동 리깅 후보 UniRig는 8GB+ VRAM 요구로 현 6GB GPU에서 미검증.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    첫 번째 출력 프로필은 캐릭터입니다. 공통 파이프라인에서 나온 캐릭터에 관절을 지정하고 리깅한 뒤, MediaPipe로 사용자의 손과 몸 동작을 받아 미니게임에서 움직입니다. 핵심 경험은 ‘내 그림이 내 동작을 따라 한다’입니다.
+    손 인식 쪽은 이미 동작합니다. 랜드마크 추출이 중앙값 11ms, 프레임에서 명령까지 95퍼센타일 37ms였습니다. 다만 샘플 데이터 기준이고, 실제 사람 데이터는 수집 예정입니다.
+    [팀원 데모 영상/화면이 들어가면 여기서 재생] 리깅과 미니게임 연결은 계획 단계입니다.
+  </aside>
+</section>
+
+<!-- ============ 10 활용 B — 차량·레이싱 ============ -->
+<section class="slide branch-slide c-car" aria-label="10. 활용 데모 B — 차량과 레이싱" data-title="활용 B · 차량">
+  <header class="sh"><p class="kicker"><span class="pill">출력 프로필 B</span> 차량·게임 자산</p><h2>만든 차가 실제로 달리는가</h2></header>
+  <ol class="bflow" aria-label="차량 출력 프로필 흐름">
+    <li class="from"><b>공통 파이프라인</b><span>차량 이미지 → 설계도 → 3D</span></li>
+    <li><b>자연어 수정</b><span>“차체를 낮게”</span><em class="badge wip">진행 중</em></li>
+    <li><b>게임용 변환</b><span>크기·방향·폴리곤(LOD)</span><em class="badge plan">계획</em></li>
+    <li><b>충돌체</b><span>박스 콜라이더 + 레이캐스트 휠</span><em class="badge plan">계획</em></li>
+    <li><b>레이싱</b><span>물리·AI·손 조향 환경</span><em class="badge done">완료</em></li>
+  </ol>
+  <div class="race">
+    <figure class="race-hero"><img src="assets/race-1.jpg" alt="레이싱 시뮬레이터 실제 주행 화면: 연석이 있는 코너를 도는 차량과 순위·랩타임 HUD" loading="eager"><figcaption>실제 주행 화면 · 브라우저 실행(Three.js + Rapier)</figcaption></figure>
+    <div class="race-side">
+      <figure><img src="assets/race-2.jpg" alt="관중석 앞 그래블 구간에서 두 차량이 경쟁하는 장면" loading="eager"></figure>
+      <ul class="race-facts">
+        <li><b>20대</b> AI 레이스 헤드리스 테스트 전원 완주 · 물리+AI 스텝당 약 2ms</li>
+        <li><b>손 조향</b> MediaPipe Hand Landmarker로 보이지 않는 핸들 조작</li>
+        <li><b>자산 규격</b> GLB · 차체 1 + 바퀴 4 노드 · 미터·Y-up · LOD 2단</li>
+      </ul>
+      <p class="limit"><b>범위</b> 레이싱은 생성 자산의 <b>사용 가능성 검증 무대</b>. 생성 차량 연결은 외형 교체 방식이 문서화된 단계이며, 주행 성능은 형상이 아닌 수치 스펙에서 온다.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    두 번째 출력 프로필은 차량입니다. 레이싱 게임은 프로젝트의 본체가 아니라, 우리가 만든 자산이 실제 엔진 안에서 쓸 수 있는지 검증하는 무대입니다.
+    이 화면은 브라우저에서 실제로 돌아가는 레이싱 환경입니다. Rapier 물리, 20대 AI 레이스, MediaPipe 손 조향까지 동작합니다.
+    게임에 들어가려면 차체 1개와 바퀴 4개 노드, 미터 단위, 방향, 폴리곤 수, 충돌체 규격을 맞춰야 합니다. 이 규격으로 생성 차량을 변환하는 것이 차량 출력 프로필이고, 지금은 연결 방법이 문서화된 단계입니다.
+  </aside>
+</section>
+
+<!-- ============ 11 활용 C — 3D 프린팅 ============ -->
+<section class="slide branch-slide c-print" aria-label="11. 활용 데모 C — 3D 프린팅" data-title="활용 C · 프린팅">
+  <header class="sh"><p class="kicker"><span class="pill">출력 프로필 C</span> 3D 프린팅</p><h2>같은 자산을 손에 쥐는 모형으로</h2></header>
+  <ol class="bflow" aria-label="3D 프린팅 출력 프로필 흐름">
+    <li class="from"><b>공통 파이프라인</b><span>같은 3D 자산</span></li>
+    <li><b>출력용 검사</b><span>수밀·두께·크기·바닥</span><em class="badge wip">진행 중</em></li>
+    <li><b>STL 변환</b><span>mm 단위 정규화</span><em class="badge done">완료</em></li>
+    <li><b>미니어처 출력</b><span>캐릭터·차량 모형</span><em class="badge plan">계획</em></li>
+  </ol>
+  <div class="print">
+    <table class="checks" aria-label="출력 전 검사 항목">
+      <thead><tr><th scope="col">출력 전 검사</th><th scope="col">기준</th><th scope="col">상태</th></tr></thead>
+      <tbody>
+        <tr><td>Watertight</td><td>경계 edge 0 (구멍 없음)</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>Non-manifold</td><td>비다양체 edge 0</td><td><span class="badge wip">진행 중</span></td></tr>
+        <tr><td>실제 크기</td><td>내부 단위 mm, 치수 오차 검사</td><td><span class="badge done">완료</span></td></tr>
+        <tr><td>최소 두께</td><td>노즐 기준 얇은 부위 경고</td><td><span class="badge plan">계획</span></td></tr>
+        <tr><td>바닥면</td><td>접지면 평탄화·정렬</td><td><span class="badge plan">계획</span></td></tr>
+      </tbody>
+    </table>
+    <div class="ph" data-ph="STL 미리보기 화면 (CAD 편집기 /cad, 메시 가져오기)"><svg class="ph-icon"><use href="#i-cube"/></svg></div>
+    <div class="ph" data-ph="실제 출력물 사진 (캐릭터·차량 미니어처)"><svg class="ph-icon"><use href="#i-print"/></svg></div>
+  </div>
+  <p class="callout">기계 부품 수준의 정밀 CAD가 아니다. <b>캐릭터·차량 미니어처 출력부터</b> 시작한다 — AI 메시는 CAD 솔리드로 취급하지 않는다.</p>
+  <aside class="notes">
+    세 번째 출력 프로필은 3D 프린팅입니다. 같은 자산을 출력용 규칙으로 다시 검사합니다. 구멍이 없는지, 비다양체가 없는지, 실제 mm 크기가 맞는지, 너무 얇은 곳은 없는지, 바닥에 설 수 있는지입니다.
+    STL 내보내기와 mm 단위 정규화는 구현되어 있고, 구멍·비다양체 검사는 품질 검사 슬라이드에서 본 엔진을 그대로 씁니다. 두께와 바닥면 검사는 계획입니다.
+    분명히 말씀드리면 이것은 기계 부품 CAD가 아닙니다. 캐릭터와 차량 미니어처부터 시작합니다.
+  </aside>
+</section>
+
+<!-- ============ 12 검증 및 성과 ============ -->
+<section class="slide" aria-label="12. 검증 및 현재 성과" data-title="검증">
+  <header class="sh"><p class="kicker">08 · 검증</p><h2>측정한 것만 말한다</h2></header>
+  <div class="results">
+    <div class="chart-card">
+      <p class="chart-h">합성 정답 5종 · 복원 실루엣 IoU <small>2026-10-13 · 작업 브랜치</small></p>
+      <div class="chart" data-chart='{"type":"hbar","min":95,"max":100,"unit":"%","decimals":2,"rows":[["구",99.32],["원기둥",99.25],["손잡이 컵",99.71],["구멍 상자",99.44],["비대칭",99.90]]}' role="img" aria-label="합성 정답 5종 실루엣 IoU: 구 99.32%, 원기둥 99.25%, 손잡이 컵 99.71%, 구멍 상자 99.44%, 비대칭 99.90%. 비다양체 edge 모두 0"></div>
+      <p class="chart-foot">5종 모두 비다양체 edge 0 · 축 시작 95%</p>
+    </div>
+    <div class="chart-card">
+      <p class="chart-h">크기·중심 자동 보정 전후 <small>실물 로봇 5면 세트</small></p>
+      <div class="chart" data-chart='{"type":"pair","min":0,"max":100,"unit":"%","decimals":2,"series":["수동 보정","자동 보정"],"rows":[["실루엣 IoU",75.85,95.32],["형상 점수",60.27,93.25],["텍스처 점수",86.76,76.14]]}' role="img" aria-label="자동 보정 전후: 실루엣 IoU 75.85%에서 95.32%, 형상 점수 60.27%에서 93.25%, 텍스처 점수 86.76%에서 76.14%로 하락"></div>
+      <p class="chart-foot">텍스처 점수 하락도 그대로 보고 — 형상과 텍스처를 같은 점수로 주장하지 않음</p>
+    </div>
+    <div class="chart-card">
+      <p class="chart-h">자연어 → 설계 명세 성공률 <small>20문항 · Qwen2.5-1.5B · RTX 4060</small></p>
+      <div class="chart" data-chart='{"type":"hbar","min":0,"max":100,"unit":"%","decimals":0,"rows":[["1차 시도",80],["재시도 포함",90]]}' role="img" aria-label="자연어에서 설계 명세 생성 성공률: 1차 80%, 교정 재시도 포함 90%"></div>
+      <p class="chart-foot">실패 2건: 네 다리 책상의 부품 ID 중복 — 명시적 실패로 기록</p>
+    </div>
+    <div class="pending">
+      <p class="pending-h">측정 예정</p>
+      <ul>
+        <li>GrabCut vs SAM2 — 마스크 IoU · 처리 시간 · VRAM</li>
+        <li>이미지→3D 모델별 처리 시간 · VRAM · 사용 가능률</li>
+        <li>실제 사용자 그림 평가셋 사용 가능률</li>
+      </ul>
+      <p class="limit"><b>한계</b> 현재 수치는 합성·샘플 데이터 중심. 실제 사용자 그림과 사람 손 데이터 검증이 추가로 필요하다.</p>
+    </div>
+  </div>
+  <div class="roadmap" aria-label="진행 상태 요약">
+    <div><span class="badge done">완료</span><p>5면 정렬·검증 · 실루엣/AI 복원 · 재투영 채점 · 자연어→CAD·이력 · 손 인식 · 레이싱 환경 · STL</p></div>
+    <div><span class="badge wip">진행 중</span><p>토폴로지 검사·Manifold 보정 · 자동 크기·중심 보정 · 자산 자연어 편집 연결</p></div>
+    <div><span class="badge plan">다음 단계</span><p>SAM2 비교 · 리깅·미니게임 · 차량 변환·충돌체 · 두께·바닥 검사 · 실물 출력</p></div>
+  </div>
+  <aside class="notes">
+    성과는 저장소에 기록된 측정값만 가져왔습니다. 합성 정답 5종에서 복원 실루엣 일치도는 99.25%에서 99.90% 사이였고, 비다양체 edge는 모두 0이었습니다.
+    실제 로봇 5면 세트에서는 크기·중심 자동 보정으로 실루엣 일치도가 75.85%에서 95.32%로 올랐습니다. 텍스처 점수는 오히려 떨어졌는데, 이것도 그대로 보고합니다.
+    자연어에서 설계 명세로 가는 단계는 20문항 중 1차 80%, 교정 재시도 포함 90%였습니다.
+    GrabCut과 SAM2 비교, 모델별 VRAM, 실제 사용자 그림 평가는 아직 측정하지 않았고, 측정 예정으로 표시했습니다. 현재 수치는 합성과 샘플 중심이라는 한계도 함께 말씀드립니다.
+  </aside>
+</section>
+
+<!-- ============ 13 결론 ============ -->
+<section class="slide s-closing" aria-label="13. 결론 및 비전" data-title="결론">
+  <header class="sh"><p class="kicker">09 · 비전</p><h2 class="big">하나의 3D 자산, 여러 현실</h2></header>
+  <div class="closing">
+    <div class="cl-core"><svg><use href="#i-cube"/></svg><b>하나의 자산</b><small>공통 파이프라인 · 품질 보고서</small></div>
+    <svg class="links cl-links" viewBox="0 0 220 420" aria-hidden="true">
+      <path d="M0 210 C90 210 90 80 220 80"/><path d="M0 210 H220"/><path d="M0 210 C90 210 90 340 220 340"/>
+    </svg>
+    <ul class="cl-outs">
+      <li class="c-char"><svg><use href="#i-person"/></svg><p>캐릭터는 <b>몸으로 움직이고</b></p></li>
+      <li class="c-car"><svg><use href="#i-car"/></svg><p>차량은 <b>게임에서 달리고</b></p></li>
+      <li class="c-print"><svg><use href="#i-print"/></svg><p>모델은 <b>실물로 출력된다</b></p></li>
+    </ul>
+  </div>
+  <p class="final">Draw2World AI는 3D를 생성하는 도구를 넘어,<br>사용자의 상상을 디지털 경험과 현실의 결과물로 연결합니다.</p>
+  <aside class="notes">
+    정리하겠습니다. 저희가 만드는 것은 하나의 3D 자산과, 그 자산이 쓰일 수 있는지 알려주는 품질 보고서입니다.
+    그 자산은 캐릭터가 되어 몸으로 움직이고, 차량이 되어 게임에서 달리고, 모형이 되어 손에 쥐어집니다.
+    Draw2World AI는 3D를 생성하는 도구를 넘어, 사용자의 상상을 디지털 경험과 현실의 결과물로 연결합니다. 감사합니다.
+  </aside>
+</section>
+
+</div><!-- /stage -->
+</div><!-- /deck -->
+
+<!-- 진행률 -->
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<!-- 하단 컨트롤 -->
+<nav class="controls" id="controls" aria-label="슬라이드 이동">
+  <button type="button" id="btnPrev" aria-label="이전 슬라이드">‹</button>
+  <span class="counter" id="counter" aria-live="polite">1 / 13</span>
+  <button type="button" id="btnNext" aria-label="다음 슬라이드">›</button>
+  <span class="sep" aria-hidden="true"></span>
+  <button type="button" id="btnNotes" aria-label="발표자 메모 열기/닫기" aria-pressed="false">메모 <kbd>N</kbd></button>
+  <button type="button" id="btnFull" aria-label="전체화면 전환">전체화면 <kbd>F</kbd></button>
+</nav>
+
+<!-- 발표자 메모 -->
+<div class="notes-panel" id="notesPanel" role="region" aria-label="발표자 메모" hidden>
+  <p class="np-title" id="notesTitle"></p>
+  <div class="np-body" id="notesBody"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+@charset "UTF-8";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+/* Draw2World AI — 발표 슬라이드 (텍스트 스켈레톤: 배경·색 없음)
+   기준 해상도 1920×1080. 스테이지 전체를 뷰포트에 맞춰 비율 유지 축소/확대한다. */
+
+:root {
+  --font: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", "Noto Sans KR", system-ui, sans-serif;
+  --scale: 1;
+}
+
+* { box-sizing: border-box; }
+html, body { word-break: keep-all; overflow-wrap: break-word; margin: 0; height: 100%; background: #fff; color: #000; font-family: var(--font); overflow: hidden; }
+h1, h2, h3, p, ol, ul { margin: 0; }
+button, input, textarea, select, kbd, code, pre, svg text { font-family: var(--font); }
+button { font: inherit; }
+
+/* ---------- 스테이지 ---------- */
+.deck { position: fixed; inset: 0; overflow: hidden; }
+.stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1920px; height: 1080px;
+  transform: translate(-50%, -50%) scale(var(--scale));
+  transform-origin: center center;
+  overflow: hidden;
+}
+.slide { position: absolute; inset: 0; padding: 84px 120px 96px; display: none; flex-direction: column; }
+.slide.is-active { display: flex; }
+.slide .notes { display: none; }
+.sf { position: absolute; left: 120px; right: 120px; bottom: 36px; display: flex; justify-content: space-between; font-size: 18px; }
+
+/* ---------- 텍스트 ---------- */
+.sh { margin-bottom: 44px; }
+.kicker { font-size: 22px; margin-bottom: 14px; }
+h1 { font-size: 88px; line-height: 1.15; }
+h2 { font-size: 60px; line-height: 1.15; }
+h3 { font-size: 32px; margin-bottom: 16px; }
+.s-opening { justify-content: center; }
+.brand { font-size: 32px; margin-bottom: 40px; }
+.lead { font-size: 36px; margin-top: 32px; }
+.meta { font-size: 24px; margin-top: 56px; }
+
+.sk { display: flex; flex-direction: column; gap: 28px; }
+.sk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.sk p, .sk ul, .sk ol { font-size: 30px; line-height: 1.5; }
+.sk ul, .sk ol { padding-left: 40px; }
+.sk li + li { margin-top: 12px; }
+.sk-quote { font-weight: 700; }
+.sk-toc h3 + ol { margin-bottom: 36px; }
+.sk-toc ol { font-size: 28px; }
+.sk-note { font-size: 24px; margin-top: 20px; }
+.sk-table { border-collapse: collapse; width: 100%; font-size: 24px; line-height: 1.4; }
+.sk-table th, .sk-table td { border: 1px solid #000; padding: 10px 14px; text-align: left; vertical-align: top; }
+.team-bar { position: absolute; top: 32px; right: 120px; font-size: 18px; }
+.team-bar a { color: inherit; }
+
+/* ---------- 컨트롤 / 메모 ---------- */
+.progress { display: none; }
+.controls { position: fixed; right: 20px; bottom: 18px; display: flex; align-items: center; gap: 6px; background: #fff; opacity: 0; transition: opacity .25s ease; }
+.controls.show, .controls:hover, .controls:focus-within { opacity: 1; }
+.controls button { padding: 4px 10px; cursor: pointer; }
+.counter { font-size: 15px; min-width: 64px; text-align: center; }
+.notes-panel { position: fixed; left: 20px; bottom: 18px; width: min(760px, calc(100vw - 420px)); max-height: 42vh; overflow: auto; padding: 16px 20px; background: #fff; border: 1px solid #000; }
+.np-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.np-body { font-size: 16px; line-height: 1.7; white-space: pre-line; }
+
+/* ---------- 인쇄 / PDF ---------- */
+@page { size: 1920px 1080px; margin: 0; }
+@media print {
+  html, body { overflow: visible; height: auto; }
+  .deck { position: static; }
+  .stage { position: static; transform: none !important; height: auto; overflow: visible; }
+  .slide { position: relative; display: flex !important; width: 1920px; height: 1080px; break-after: page; }
+  .slide:last-child { break-after: auto; }
+  .controls, .progress, .notes-panel { display: none !important; }
+}
+.sk-toc ul { list-style: none; padding-left: 0; font-size: 28px; }
+.sk-toc ul + h3 { margin-top: 36px; }
+.shots img { display: block; width: 100%; border: 1px solid #000; }
+.cad-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.cad-in { position: relative; }
+.cad-in .cad-ov { position: absolute; inset: 0; height: 100%; border: 0; }
