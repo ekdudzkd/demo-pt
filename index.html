@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Draw2World AI — 발표</title>
+<title>B206 중간발표</title>
 <meta name="description" content="내가 그린 캐릭터가 3D로 살아 움직이고, 내 몸짓을 따라 게임 속에서 활동한다 — Draw2World AI 기술 구현·검증 발표">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -23,27 +23,149 @@
 
 <!-- 01. 오프닝 -->
 <section class="slide s-opening l-cover" aria-label="01. 오프닝" data-title="오프닝">
-  <div class="orb orb-sun" aria-hidden="true"></div>
-  <div class="bunny bunny-cover" aria-hidden="true">
-    <span class="ear ear-l"></span><span class="ear ear-r"></span>
-    <div class="mascot"><i></i></div>
-  </div>
-  <svg class="bunny-line" viewBox="0 0 200 210" aria-hidden="true">
-    <defs><linearGradient id="bunnyStroke" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fb4ff"/><stop offset=".5" stop-color="#c2a8f2"/><stop offset="1" stop-color="#8fe3d2"/></linearGradient></defs>
-    <g fill="none" stroke="url(#bunnyStroke)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M78 91 C 62 60, 58 14, 72 10 C 86 6, 96 50, 94 88"/>
-      <path d="M122 91 C 138 60, 142 14, 128 10 C 114 6, 104 50, 106 88"/>
-      <ellipse cx="100" cy="140" rx="64" ry="52"/>
-      <path d="M94 156 Q 100 162 106 156"/>
-    </g>
-    <circle cx="78" cy="134" r="5" fill="#c2a8f2"/><circle cx="122" cy="134" r="5" fill="#c2a8f2"/>
+  <!-- 크레파스 질감: 선 흔들림 + 종이 결이 비치는 거친 입자 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="pastel" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="2" seed="3" result="warp"/>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="7" result="wobbly"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="9" result="grain"/>
+        <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.6 0 0 0 2.25" result="grainA"/>
+        <feComposite in="wobbly" in2="grainA" operator="in"/>
+      </filter>
+      <clipPath id="sunClip"><circle cx="150" cy="150" r="70"/></clipPath>
+      <clipPath id="headClip"><ellipse cx="125" cy="205" rx="72" ry="57"/></clipPath>
+    </defs>
   </svg>
-  <div class="cover-body">
-    <p class="cover-brand">Draw<em>2</em>World AI</p>
-    <h1 class="cover-q">내가 그린 캐릭터가<br><em>살아 움직인다면?</em></h1>
-    <button type="button" class="pill pill-lg" data-nav="next">START <span aria-hidden="true">▶</span></button>
+  <!-- 표지 해: 크레파스 해 → 토끼가 변신할 때 함께 한 바퀴 돌며 입체 해로 -->
+  <svg class="sun-crayon" viewBox="0 0 300 300" aria-hidden="true">
+    <defs>
+      <radialGradient id="s3Body" cx=".36" cy=".32" r=".75"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffe066"/><stop offset=".75" stop-color="#ffaa2b"/><stop offset="1" stop-color="#ee7a12"/></radialGradient>
+      <linearGradient id="s3Ray" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffb43a"/><stop offset=".45" stop-color="#ffe27a"/><stop offset="1" stop-color="#f08a1c"/></linearGradient>
+      <radialGradient id="s3Cheek"><stop offset="0" stop-color="#ff7a7a" stop-opacity=".7"/><stop offset="1" stop-color="#ff7a7a" stop-opacity="0"/></radialGradient>
+      <filter id="s3Glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
+    </defs>
+    <g class="sun-flat">
+      <g class="sun-rays" filter="url(#pastel)" fill="none" stroke="#f39a2b" stroke-width="12" stroke-linecap="round">
+        <path d="M150 50 L150 16"/><path d="M150 50 L150 22" transform="rotate(30 150 150)"/><path d="M150 50 L150 12" transform="rotate(60 150 150)"/>
+        <path d="M150 50 L150 20" transform="rotate(90 150 150)"/><path d="M150 50 L150 14" transform="rotate(120 150 150)"/><path d="M150 50 L150 24" transform="rotate(150 150 150)"/>
+        <path d="M150 50 L150 16" transform="rotate(180 150 150)"/><path d="M150 50 L150 22" transform="rotate(210 150 150)"/><path d="M150 50 L150 12" transform="rotate(240 150 150)"/>
+        <path d="M150 50 L150 20" transform="rotate(270 150 150)"/><path d="M150 50 L150 14" transform="rotate(300 150 150)"/><path d="M150 50 L150 24" transform="rotate(330 150 150)"/>
+      </g>
+      <g filter="url(#pastel)">
+        <circle cx="150" cy="150" r="70" fill="#ffe066"/>
+        <path clip-path="url(#sunClip)" d="M70 110 L112 72 L78 142 L150 74 L84 178 L188 80 L100 212 L222 108 L128 226 L226 150 L168 226 L222 192" fill="none" stroke="#ffb33d" stroke-width="10" stroke-linejoin="round" opacity=".75"/>
+        <circle cx="150" cy="150" r="70" fill="none" stroke="#ec7a1c" stroke-width="7"/>
+        <circle cx="128" cy="140" r="6" fill="#3b2a22"/><circle cx="172" cy="140" r="6" fill="#3b2a22"/>
+        <path d="M126 168 Q150 188 174 168" fill="none" stroke="#3b2a22" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="112" cy="164" r="10" fill="#ff8a8a" opacity=".55"/><circle cx="188" cy="164" r="10" fill="#ff8a8a" opacity=".55"/>
+      </g>
+    </g>
+    <g class="sun-3d">
+      <circle cx="150" cy="150" r="96" fill="#ffd34d" opacity=".45" filter="url(#s3Glow)"/>
+      <g class="sun-rays">
+        <rect x="140" y="12" width="20" height="40" rx="10" fill="url(#s3Ray)"/><rect x="140" y="16" width="20" height="36" rx="10" fill="url(#s3Ray)" transform="rotate(30 150 150)"/><rect x="140" y="10" width="20" height="42" rx="10" fill="url(#s3Ray)" transform="rotate(60 150 150)"/>
+        <rect x="140" y="14" width="20" height="38" rx="10" fill="url(#s3Ray)" transform="rotate(90 150 150)"/><rect x="140" y="12" width="20" height="40" rx="10" fill="url(#s3Ray)" transform="rotate(120 150 150)"/><rect x="140" y="18" width="20" height="34" rx="10" fill="url(#s3Ray)" transform="rotate(150 150 150)"/>
+        <rect x="140" y="12" width="20" height="40" rx="10" fill="url(#s3Ray)" transform="rotate(180 150 150)"/><rect x="140" y="16" width="20" height="36" rx="10" fill="url(#s3Ray)" transform="rotate(210 150 150)"/><rect x="140" y="10" width="20" height="42" rx="10" fill="url(#s3Ray)" transform="rotate(240 150 150)"/>
+        <rect x="140" y="14" width="20" height="38" rx="10" fill="url(#s3Ray)" transform="rotate(270 150 150)"/><rect x="140" y="12" width="20" height="40" rx="10" fill="url(#s3Ray)" transform="rotate(300 150 150)"/><rect x="140" y="18" width="20" height="34" rx="10" fill="url(#s3Ray)" transform="rotate(330 150 150)"/>
+      </g>
+      <circle cx="150" cy="150" r="72" fill="url(#s3Body)"/>
+      <ellipse cx="124" cy="112" rx="28" ry="15" fill="#fff" opacity=".7" transform="rotate(-30 124 112)"/>
+      <ellipse cx="128" cy="142" rx="6.5" ry="8.5" fill="#3b2a22"/><ellipse cx="172" cy="142" rx="6.5" ry="8.5" fill="#3b2a22"/>
+      <circle cx="130.5" cy="138.5" r="2.4" fill="#fff"/><circle cx="174.5" cy="138.5" r="2.4" fill="#fff"/>
+      <path d="M128 168 Q150 186 172 168" fill="none" stroke="#3b2a22" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="110" cy="164" r="15" fill="url(#s3Cheek)"/><circle cx="190" cy="164" r="15" fill="url(#s3Cheek)"/>
+    </g>
+  </svg>
+  <!-- 표지 나무: 크레파스 나무 → 토끼·해와 함께 한 바퀴 돌며 입체 나무로 -->
+  <svg class="tree-art" viewBox="0 0 260 320" aria-hidden="true">
+    <defs>
+      <clipPath id="canopyClip"><circle cx="130" cy="120" r="70"/><circle cx="78" cy="150" r="48"/><circle cx="182" cy="150" r="48"/><circle cx="100" cy="80" r="46"/><circle cx="160" cy="80" r="46"/></clipPath>
+      <radialGradient id="t3Leaf" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#d4f7b4"/><stop offset=".45" stop-color="#7fcf5a"/><stop offset="1" stop-color="#3f8f3a"/></radialGradient>
+      <linearGradient id="t3Trunk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a4c2a"/><stop offset=".45" stop-color="#c99060"/><stop offset="1" stop-color="#6e4224"/></linearGradient>
+      <radialGradient id="t3Apple" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#ffc4c4"/><stop offset=".45" stop-color="#ff5252"/><stop offset="1" stop-color="#b8262b"/></radialGradient>
+      <radialGradient id="t3Grass" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#b9e89a"/><stop offset="1" stop-color="#b9e89a" stop-opacity="0"/></radialGradient>
+    </defs>
+    <g class="tree-flat" filter="url(#pastel)">
+      <ellipse cx="130" cy="306" rx="78" ry="11" fill="#bfe6a0"/>
+      <path d="M110 306 Q116 240 117 186 L143 186 Q144 240 150 306 Z" fill="#c08552" stroke="#5a3a22" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M130 250 L130 214 M130 236 L150 216" fill="none" stroke="#7a4c2a" stroke-width="4" stroke-linecap="round"/>
+      <g fill="none" stroke="#3f8a35" stroke-width="12"><circle cx="130" cy="120" r="70"/><circle cx="78" cy="150" r="48"/><circle cx="182" cy="150" r="48"/><circle cx="100" cy="80" r="46"/><circle cx="160" cy="80" r="46"/></g>
+      <g fill="#8fd16a"><circle cx="130" cy="120" r="70"/><circle cx="78" cy="150" r="48"/><circle cx="182" cy="150" r="48"/><circle cx="100" cy="80" r="46"/><circle cx="160" cy="80" r="46"/></g>
+      <path clip-path="url(#canopyClip)" d="M40 150 L90 60 L70 180 L150 40 L110 196 L200 60 L150 200 L232 110 L196 196" fill="none" stroke="#6bbd4c" stroke-width="11" stroke-linejoin="round" opacity=".75"/>
+      <g fill="#ff6b6b" stroke="#c43c3c" stroke-width="3"><circle cx="98" cy="128" r="10"/><circle cx="160" cy="104" r="10"/><circle cx="140" cy="164" r="10"/><circle cx="190" cy="160" r="10"/><circle cx="72" cy="168" r="10"/></g>
+    </g>
+    <g class="tree-3d">
+      <ellipse cx="130" cy="306" rx="96" ry="16" fill="url(#t3Grass)"/>
+      <ellipse cx="130" cy="304" rx="40" ry="7" fill="#3b2a22" opacity=".18"/>
+      <path d="M110 306 Q116 240 117 186 L143 186 Q144 240 150 306 Z" fill="url(#t3Trunk)"/>
+      <circle cx="78" cy="150" r="48" fill="url(#t3Leaf)"/><circle cx="182" cy="150" r="48" fill="url(#t3Leaf)"/>
+      <circle cx="130" cy="120" r="70" fill="url(#t3Leaf)"/>
+      <circle cx="100" cy="80" r="46" fill="url(#t3Leaf)"/><circle cx="160" cy="80" r="46" fill="url(#t3Leaf)"/>
+      <ellipse cx="88" cy="62" rx="18" ry="10" fill="#fff" opacity=".45" transform="rotate(-30 88 62)"/>
+      <ellipse cx="148" cy="62" rx="16" ry="9" fill="#fff" opacity=".4" transform="rotate(-30 148 62)"/>
+      <g fill="url(#t3Apple)"><circle cx="98" cy="128" r="11"/><circle cx="160" cy="104" r="11"/><circle cx="140" cy="164" r="11"/><circle cx="190" cy="160" r="11"/><circle cx="72" cy="168" r="11"/></g>
+      <g fill="#fff" opacity=".85"><circle cx="94.5" cy="124" r="3"/><circle cx="156.5" cy="100" r="3"/><circle cx="136.5" cy="160" r="3"/><circle cx="186.5" cy="156" r="3"/><circle cx="68.5" cy="164" r="3"/></g>
+    </g>
+  </svg>
+  <!-- 표지 토끼: 평면 크레파스 토끼가 왼쪽에서 깡총깡총 뛰어나와, 가운데서 한 바퀴 돌며 입체로 변한 뒤 오른쪽으로 이동 -->
+  <div class="cover-walker" aria-hidden="true">
+    <span class="walker-shadow"></span>
+    <div class="walker-bob">
+      <div class="walker-spin">
+        <svg class="walker-flat" viewBox="0 0 250 400">
+          <g filter="url(#pastel)" stroke="#3b2a22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="92" cy="95" rx="24" ry="70" fill="#fff" transform="rotate(-10 92 160)"/>
+            <ellipse cx="158" cy="95" rx="24" ry="70" fill="#fff" transform="rotate(10 158 160)"/>
+            <ellipse cx="92" cy="102" rx="10" ry="46" fill="#ffb8cc" stroke="none" transform="rotate(-10 92 160)"/>
+            <ellipse cx="158" cy="102" rx="10" ry="46" fill="#ffb8cc" stroke="none" transform="rotate(10 158 160)"/>
+            <ellipse cx="125" cy="300" rx="60" ry="56" fill="#fff"/>
+            <ellipse cx="125" cy="312" rx="32" ry="30" fill="#fff4ec" stroke="none"/>
+            <g class="b-legs"><ellipse cx="95" cy="360" rx="30" ry="15" fill="#fff"/><ellipse cx="155" cy="360" rx="30" ry="15" fill="#fff"/></g>
+            <g class="b-arms"><ellipse cx="80" cy="290" rx="13" ry="23" fill="#fff" transform="rotate(25 80 290)"/><ellipse cx="170" cy="290" rx="13" ry="23" fill="#fff" transform="rotate(-25 170 290)"/></g>
+            <ellipse cx="125" cy="205" rx="82" ry="66" fill="#fff"/>
+            <path clip-path="url(#headClip)" d="M150 272 L206 214 L172 272 L212 242" fill="none" stroke="#eadccb" stroke-width="10" opacity=".7"/>
+            <ellipse cx="98" cy="200" rx="7" ry="10" fill="#3b2a22" stroke="none"/><ellipse cx="152" cy="200" rx="7" ry="10" fill="#3b2a22" stroke="none"/>
+            <path d="M117 222 L133 222 L125 230 Z" fill="#ff8fa8" stroke-width="3"/>
+            <path d="M112 238 Q125 247 138 238" fill="none" stroke-width="4"/>
+            <circle cx="78" cy="228" r="14" fill="#ff9fb0" stroke="none" opacity=".7"/><circle cx="172" cy="228" r="14" fill="#ff9fb0" stroke="none" opacity=".7"/>
+          </g>
+        </svg>
+        <svg class="walker-3d" viewBox="0 0 250 400">
+          <defs>
+            <radialGradient id="b3Body" cx=".38" cy=".3" r=".78"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#f6f2f8"/><stop offset=".8" stop-color="#ddd4e8"/><stop offset="1" stop-color="#bfb3d2"/></radialGradient>
+            <radialGradient id="b3Ear" cx=".35" cy=".28" r=".85"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#efe9f4"/><stop offset="1" stop-color="#c7bcd8"/></radialGradient>
+            <radialGradient id="b3Inner" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#ffd6e2"/><stop offset="1" stop-color="#f08fac"/></radialGradient>
+            <radialGradient id="b3Tummy" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#fffaf6"/><stop offset="1" stop-color="#f3e6ee"/></radialGradient>
+            <radialGradient id="b3Cheek"><stop offset="0" stop-color="#ff8fa8" stop-opacity=".75"/><stop offset="1" stop-color="#ff8fa8" stop-opacity="0"/></radialGradient>
+          </defs>
+          <ellipse cx="92" cy="95" rx="24" ry="70" fill="url(#b3Ear)" transform="rotate(-10 92 160)"/>
+          <ellipse cx="158" cy="95" rx="24" ry="70" fill="url(#b3Ear)" transform="rotate(10 158 160)"/>
+          <ellipse cx="92" cy="102" rx="10" ry="46" fill="url(#b3Inner)" transform="rotate(-10 92 160)"/>
+          <ellipse cx="158" cy="102" rx="10" ry="46" fill="url(#b3Inner)" transform="rotate(10 158 160)"/>
+          <ellipse cx="125" cy="300" rx="60" ry="56" fill="url(#b3Body)"/>
+          <ellipse cx="125" cy="312" rx="32" ry="30" fill="url(#b3Tummy)"/>
+          <g class="b-legs"><ellipse cx="95" cy="360" rx="30" ry="15" fill="url(#b3Ear)"/><ellipse cx="155" cy="360" rx="30" ry="15" fill="url(#b3Ear)"/></g>
+          <g class="b-arms"><ellipse cx="80" cy="290" rx="13" ry="23" fill="url(#b3Ear)" transform="rotate(25 80 290)"/><ellipse cx="170" cy="290" rx="13" ry="23" fill="url(#b3Ear)" transform="rotate(-25 170 290)"/></g>
+          <ellipse cx="125" cy="205" rx="82" ry="66" fill="url(#b3Body)"/>
+          <ellipse cx="96" cy="170" rx="26" ry="13" fill="#fff" opacity=".8" transform="rotate(-20 96 170)"/>
+          <ellipse cx="98" cy="200" rx="8" ry="11" fill="#2a2420"/><ellipse cx="152" cy="200" rx="8" ry="11" fill="#2a2420"/>
+          <circle cx="100.5" cy="195.5" r="3" fill="#fff"/><circle cx="154.5" cy="195.5" r="3" fill="#fff"/>
+          <path d="M117 222 L133 222 L125 230 Z" fill="#f2829f"/>
+          <path d="M112 238 Q125 247 138 238" fill="none" stroke="#3b2a22" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="76" cy="228" r="18" fill="url(#b3Cheek)"/><circle cx="174" cy="228" r="18" fill="url(#b3Cheek)"/>
+        </svg>
+      </div>
+    </div>
+    <span class="walker-spark s-a">✦</span><span class="walker-spark s-b">✦</span><span class="walker-spark s-c">★</span>
   </div>
-  <p class="cover-meta">팀 워커홀릭 · SSAFY 자율 프로젝트 · 2026.10</p>
+  <div class="cover-body">
+    <h1 class="cover-q">B206 <em>중간발표</em></h1>
+    <ul class="cover-team" aria-label="팀원">
+      <li>문종빈</li><li>강다영</li><li>고나현</li><li>오현민</li><li>장윤우</li><li>전주현</li>
+    </ul>
+  </div>
+  <p class="cover-meta">SSAFY 자율프로젝트 - 오픈소스 | Team 워커홀릭</p>
   <aside class="notes">
     안녕하세요, Draw2World AI입니다.
     오늘 드릴 말씀은 한 문장입니다. “내가 그린 캐릭터가 3D로 살아 움직이고, 내 몸짓을 따라 게임 속에서 활동한다.”
@@ -51,43 +173,204 @@
   </aside>
 </section>
 
-<!-- 02. 목차 -->
-<section class="slide" aria-label="02. 목차" data-title="목차">
-  <header class="sh"><p class="kicker">CONTENTS</p><h2><em>목차</em></h2></header>
-  <ol class="toc">
-    <li><span class="toc-no">01</span><div><b>아이디어</b><p>직접 그린 그림을 움직이기</p></div></li>
-    <li><span class="toc-no">02</span><div><b>데모</b><p>HoloFolge AI Lab · Pinch Tower · 자동관절 인식 및 적용 · 손가락 대운동회 · F1 레이싱 게임 · 3Design</p></div></li>
-    <li><span class="toc-no">03</span><div><b>앞으로의 계획</b><p>통합, 그다음 대전과 플랫폼</p></div></li>
-    <li><span class="toc-no">04</span><div><b>What's next</b></div></li>
-  </ol>
-</section>
-
-<!-- 03. 아이디어 -->
-<section class="slide" aria-label="03. 아이디어" data-title="아이디어">
-  <header class="sh"><p class="kicker">아이디어</p><h2>직접 그린 그림을 <em>움직이기</em></h2></header>
-  <div class="arch">
-    <div class="arch-node"><p class="arch-no">①</p><b>그림 입력</b><span class="st st-done">구현 완료</span></div>
-    <div class="arch-node"><p class="arch-no">②</p><b>캐릭터 분할</b><span class="st st-done">구현 완료</span></div>
-    <div class="arch-node"><p class="arch-no">③</p><b>2D → 3D</b>
-      <div class="arch-branch">
-        <div><small>A 실루엣</small><span class="st st-done">구현 완료</span></div>
-        <div><small>B 생성 AI</small><span class="st st-exp">실험 중</span></div>
-      </div>
-    </div>
-    <div class="arch-node"><p class="arch-no">④</p><b>관절 · 스키닝</b><span class="st st-done">구현 완료</span></div>
-    <div class="arch-node"><p class="arch-no">⑤</p><b>동작 인식 → 게임</b><span class="st st-proto">프로토타입</span></div>
-  </div>
+<!-- 02. 팀 소개: 아이 그림체 얼굴 -->
+<section class="slide" aria-label="02. 팀 소개" data-title="팀 소개">
+  <header class="sh"><p class="kicker">TEAM B206</p><h2>우리 팀을 <em>소개합니다</em></h2></header>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="crayon" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+      </filter>
+    </defs>
+  </svg>
+  <ul class="kids">
+    <!-- 문종빈: 동그란 안경, 내려온 앞머리, 흰 셔츠 + 검은 넥타이 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="문종빈 그림">
+      <g filter="url(#crayon)">
+        <path class="body" d="M28 222 Q32 170 100 166 Q168 170 172 222 Z" fill="#2c2c3a"/>
+        <path d="M84 168 L100 198 L116 168 Z" fill="#fff"/>
+        <path d="M96 176 L104 176 L107 210 L100 220 L93 210 Z" fill="#1d1d26"/>
+        <circle cx="47" cy="106" r="9" class="skin"/><circle cx="153" cy="106" r="9" class="skin"/>
+        <ellipse cx="100" cy="102" rx="52" ry="58" class="skin"/>
+        <path class="hair" d="M44 104 Q38 38 100 36 Q162 38 156 104 Q152 80 136 72 L124 84 L112 72 L100 86 L88 72 L76 84 L64 72 Q50 80 44 104 Z"/>
+        <circle cx="80" cy="108" r="15" class="glass"/><circle cx="120" cy="108" r="15" class="glass"/><path class="glass" d="M95 107 Q100 103 105 107"/>
+        <circle cx="80" cy="108" r="4" class="eye"/><circle cx="120" cy="108" r="4" class="eye"/>
+        <circle cx="68" cy="130" r="8" class="cheek"/><circle cx="132" cy="130" r="8" class="cheek"/>
+        <path class="mouth" d="M88 134 Q100 144 112 134"/>
+      </g></svg><b>문종빈</b></li>
+    <!-- 강다영: 긴 생머리 + 앞머리, 흰 티 + 남색 칼라 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="강다영 그림">
+      <g filter="url(#crayon)">
+        <path class="hair" d="M40 112 Q34 34 100 34 Q166 34 160 112 L168 200 Q146 206 136 186 L64 186 Q54 206 32 200 Z"/>
+        <path class="body" d="M28 222 Q32 172 100 168 Q168 172 172 222 Z" fill="#fff"/>
+        <path d="M76 172 Q100 194 124 172" fill="none" stroke="#2b3a6b" stroke-width="7"/>
+        <ellipse cx="100" cy="104" rx="50" ry="58" class="skin"/>
+        <path class="hair" d="M50 96 Q48 44 100 42 Q152 44 150 96 Q128 84 100 86 Q72 84 50 96 Z"/>
+        <ellipse cx="82" cy="110" rx="4" ry="5" class="eye"/><ellipse cx="118" cy="110" rx="4" ry="5" class="eye"/>
+        <circle cx="70" cy="130" r="8" class="cheek"/><circle cx="130" cy="130" r="8" class="cheek"/>
+        <path class="mouth" d="M90 136 Q100 142 110 136"/>
+      </g></svg><b>강다영</b></li>
+    <!-- 고나현: 웨이브 긴 머리, 시스루 앞머리, 볼 터치 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="고나현 그림">
+      <g filter="url(#crayon)">
+        <path class="hair" d="M42 110 Q34 32 100 32 Q166 32 158 110 Q172 130 160 150 Q174 172 162 196 Q146 208 132 190 L68 190 Q54 208 38 196 Q26 172 40 150 Q28 130 42 110 Z"/>
+        <path class="body" d="M30 222 Q34 174 100 170 Q166 174 170 222 Z" fill="#f6d6dc"/>
+        <ellipse cx="100" cy="104" rx="49" ry="57" class="skin"/>
+        <path class="hair" d="M52 90 Q52 44 100 42 Q148 44 148 90 Q138 70 100 68 Q62 70 52 90 Z"/>
+        <path class="mouth" d="M80 72 L76 94 M92 70 L90 92 M108 70 L110 92 M120 72 L124 94" stroke-width="3"/>
+        <ellipse cx="82" cy="110" rx="4.5" ry="5.5" class="eye"/><ellipse cx="118" cy="110" rx="4.5" ry="5.5" class="eye"/>
+        <circle cx="70" cy="128" r="10" class="cheek" opacity=".75"/><circle cx="130" cy="128" r="10" class="cheek" opacity=".75"/>
+        <path d="M91 136 Q100 144 109 136 Z" fill="#e8607a" stroke="#3b2a22" stroke-width="2.5"/>
+      </g></svg><b>고나현</b></li>
+    <!-- 오현민: 풍성한 머리, 둥근 얼굴, 베이지 상의 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="오현민 그림">
+      <g filter="url(#crayon)">
+        <path class="body" d="M26 222 Q30 170 100 166 Q170 170 174 222 Z" fill="#eadcc4"/>
+        <path d="M80 168 Q100 182 120 168" fill="none" stroke="#3b2a22" stroke-width="3"/>
+        <circle cx="44" cy="108" r="10" class="skin"/><circle cx="156" cy="108" r="10" class="skin"/>
+        <ellipse cx="100" cy="106" rx="56" ry="56" class="skin"/>
+        <path class="hair" d="M42 100 Q30 76 46 62 Q44 38 70 36 Q84 18 104 28 Q126 16 140 36 Q164 40 158 66 Q170 82 158 100 Q150 80 132 76 Q118 86 100 78 Q82 88 66 78 Q50 82 42 100 Z"/>
+        <circle cx="80" cy="110" r="4.5" class="eye"/><circle cx="120" cy="110" r="4.5" class="eye"/>
+        <circle cx="66" cy="130" r="9" class="cheek"/><circle cx="134" cy="130" r="9" class="cheek"/>
+        <path class="mouth" d="M86 134 Q100 148 114 134"/>
+      </g></svg><b>오현민</b></li>
+    <!-- 장윤우: 검은 사각 뿔테, 짧은 머리, 회색 정장 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="장윤우 그림">
+      <g filter="url(#crayon)">
+        <path class="body" d="M28 222 Q32 170 100 166 Q168 170 172 222 Z" fill="#6c707c"/>
+        <path d="M84 168 L100 198 L116 168 Z" fill="#fff"/>
+        <path d="M96 176 L104 176 L107 210 L100 220 L93 210 Z" fill="#3a4152"/>
+        <circle cx="47" cy="108" r="9" class="skin"/><circle cx="153" cy="108" r="9" class="skin"/>
+        <ellipse cx="100" cy="104" rx="52" ry="58" class="skin"/>
+        <path class="hair" d="M46 96 Q40 40 100 38 Q160 40 154 96 Q148 70 120 66 Q100 74 80 66 Q52 70 46 96 Z"/>
+        <rect x="64" y="96" width="30" height="22" rx="4" class="glass thick"/><rect x="106" y="96" width="30" height="22" rx="4" class="glass thick"/><path class="glass thick" d="M94 104 L106 104"/>
+        <circle cx="79" cy="107" r="4" class="eye"/><circle cx="121" cy="107" r="4" class="eye"/>
+        <circle cx="68" cy="132" r="8" class="cheek"/><circle cx="132" cy="132" r="8" class="cheek"/>
+        <path class="mouth" d="M88 136 Q100 146 112 136"/>
+      </g></svg><b>장윤우</b></li>
+    <!-- 전주현: 가르마 머리, 얇은 동그란 금속테, 남색 넥타이 -->
+    <li><svg viewBox="0 0 200 220" role="img" aria-label="전주현 그림">
+      <g filter="url(#crayon)">
+        <path class="body" d="M28 222 Q32 170 100 166 Q168 170 172 222 Z" fill="#23252f"/>
+        <path d="M84 168 L100 198 L116 168 Z" fill="#fff"/>
+        <path d="M96 176 L104 176 L107 210 L100 220 L93 210 Z" fill="#2b3a6b"/>
+        <circle cx="47" cy="108" r="9" class="skin"/><circle cx="153" cy="108" r="9" class="skin"/>
+        <ellipse cx="100" cy="104" rx="52" ry="58" class="skin"/>
+        <path class="hair" d="M44 104 Q36 36 100 34 Q164 36 156 104 Q150 76 120 62 Q118 74 112 80 Q92 66 70 70 Q50 78 44 104 Z"/>
+        <path d="M114 40 Q118 56 114 74" fill="none" stroke="#7a6a5e" stroke-width="2.5"/>
+        <circle cx="80" cy="108" r="15" class="glass metal"/><circle cx="120" cy="108" r="15" class="glass metal"/><path class="glass metal" d="M95 106 Q100 102 105 106"/>
+        <circle cx="80" cy="108" r="4" class="eye"/><circle cx="120" cy="108" r="4" class="eye"/>
+        <circle cx="68" cy="132" r="8" class="cheek"/><circle cx="132" cy="132" r="8" class="cheek"/>
+        <path class="mouth" d="M88 136 Q100 146 112 136"/>
+      </g></svg><b>전주현</b></li>
+  </ul>
   <aside class="notes">
-    전체 구조입니다. 그림 입력, 캐릭터 분할, 2D→3D 생성, 관절 추정과 스키닝, 그리고 MediaPipe 동작 인식을 거쳐 게임으로 들어갑니다.
-    3번 단계만 두 갈래입니다. A는 브라우저에서 바로 도는 실루엣 기반 경로이고, B는 GPU가 필요한 생성 AI 경로입니다.
-    아래 색 표시는 오늘 모든 슬라이드에 같은 기준으로 씁니다. 구현 완료, 프로토타입, 실험 중, 향후 계획입니다.
-    이제부터 3, 4, 5단계를 차례로 깊게 보겠습니다.
+    저희 B206 팀원을 소개합니다. 문종빈, 강다영, 고나현, 오현민, 장윤우, 전주현입니다.
+    얼굴은 저희 프로젝트 주제처럼 아이가 그린 그림체로 그려 봤습니다.
   </aside>
 </section>
 
+<!-- 03. 목차 -->
+<section class="slide" aria-label="03. 목차" data-title="목차">
+  <header class="sh"><p class="kicker">CONTENTS</p><h2><em>목차</em></h2></header>
+  <ol class="toc">
+    <li><span class="toc-no">01</span><div><b>프로젝트 방향</b><p>우리는 오픈소스 도메인</p></div></li>
+    <li><span class="toc-no">02</span><div><b>우리가 만든 데모</b><p>손동작 인식 · 관절 자동 인식 · 손가락 대운동회 · F1 레이싱 게임 · 3Design</p></div></li>
+    <li><span class="toc-no">03</span><div><b>메인 기능</b><p>2D → 3D</p></div></li>
+    <li><span class="toc-no">04</span><div><b>앞으로의 계획</b></div></li>
+  </ol>
+</section>
+
+<!-- 04. 프로젝트 방향: 오픈소스 도메인 -->
+<section class="slide" aria-label="04. 프로젝트 방향" data-title="프로젝트 방향" data-steps="3" data-step="1">
+  <header class="sh"><p class="kicker">프로젝트 방향</p><h2>우리는 <em>오픈소스</em> 도메인입니다</h2></header>
+  <svg class="oss-scene" viewBox="0 30 1600 600" role="img" aria-label="아이가 오픈소스 상자를 망치로 두드려 장난감을 만드는 그림">
+    <path class="ink" d="M20 560 Q400 552 800 562 T1580 556" fill="none"/>
+    <!-- 왼쪽: 오픈소스 상자 더미 -->
+    <g class="stack"><g transform="translate(40 450) rotate(0) scale(1)"><g class="box need" style="--d:0s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(200 450) rotate(0) scale(1)"><g class="box" style="--d:0s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(120 340) rotate(-3) scale(1)"><g class="box need" style="--d:0s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g></g>
+    <!-- 2단계부터: 사방에 쏟아지는 오픈소스 -->
+    <g class="many s23"><g transform="translate(60 150) rotate(-10) scale(0.75)"><g class="box pop" style="--d:0.0s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(330 60) rotate(-12) scale(0.75)"><g class="box pop" style="--d:0.06s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(520 40) rotate(8) scale(0.75)"><g class="box need pop" style="--d:0.12s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(300 250) rotate(6) scale(0.75)"><g class="box pop" style="--d:0.18s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(440 330) rotate(-6) scale(0.75)"><g class="box pop" style="--d:0.24s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(690 60) rotate(-5) scale(0.75)"><g class="box pop" style="--d:0.3s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(980 50) rotate(-6) scale(0.75)"><g class="box pop" style="--d:0.36s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(1000 200) rotate(12) scale(0.75)"><g class="box need pop" style="--d:0.42s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(1180 40) rotate(10) scale(0.75)"><g class="box pop" style="--d:0.48s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(1250 180) rotate(5) scale(0.75)"><g class="box pop" style="--d:0.54s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(1400 60) rotate(-8) scale(0.75)"><g class="box pop" style="--d:0.6s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g><g transform="translate(1420 220) rotate(-10) scale(0.75)"><g class="box pop" style="--d:0.66s"><g filter="url(#crayon)"><rect class="ink box-body" width="150" height="110" rx="6"/><path class="ink" d="M0 26 L150 26 M75 0 L75 26" fill="none"/></g><text class="box-label" x="75" y="78">오픈소스</text><rect class="glow-base" x="-6" y="-6" width="162" height="122" rx="10"/><rect class="glow" x="-6" y="-6" width="162" height="122" rx="10" pathLength="100"/></g></g>
+      <g class="qmarks s2"><text x="250" y="200">?</text><text x="640" y="230">?</text><text x="1130" y="300">?</text><text x="900" y="120">?</text></g>
+    </g>
+    <!-- 두드리는 상자 -->
+    <g class="target"><g filter="url(#crayon)"><rect class="ink box-body" x="600" y="480" width="120" height="80" rx="6"/><path class="ink" d="M600 498 L720 498" fill="none"/></g></g>
+    <g class="bang"><path d="M640 470 L652 444 L662 466 L686 448 L676 474 L700 480 L672 488" fill="#ffd34d" stroke="#3b2a22" stroke-width="3" stroke-linejoin="round"/><text x="560" y="450">쾅!</text></g>
+    <!-- 아이 -->
+    <g class="kid" filter="url(#crayon)">
+      <path class="ink" d="M820 440 L805 552 M860 440 L875 552" stroke-width="9" fill="none"/>
+      <ellipse class="ink" cx="798" cy="556" rx="18" ry="8" fill="#3b2a22"/><ellipse class="ink" cx="882" cy="556" rx="18" ry="8" fill="#3b2a22"/>
+      <path class="ink" d="M790 315 Q840 300 890 315 L902 446 L778 446 Z" fill="#ffb84d"/>
+      <path class="ink" d="M886 330 L926 408" stroke-width="8" fill="none"/><circle class="ink skin" cx="928" cy="412" r="10"/>
+      <g class="arm">
+        <path class="ink" d="M800 330 L730 400" stroke-width="8" fill="none"/>
+        <path d="M730 400 L650 440" stroke="#8b5a2b" stroke-width="11" stroke-linecap="round"/>
+        <rect class="ink" x="-22" y="-40" width="44" height="80" rx="6" fill="#8a8f9c" transform="translate(648 441) rotate(-27)"/>
+        <circle class="ink skin" cx="730" cy="400" r="11"/>
+      </g>
+      <g class="head">
+        <circle class="ink skin" cx="840" cy="250" r="62"/>
+        <path class="ink" d="M782 232 Q790 180 840 186 Q890 180 898 232 Q880 210 870 214 L862 198 L850 214 L838 196 L826 214 L812 200 L806 220 Q792 214 782 232 Z" fill="#2a2420"/>
+        <circle cx="806" cy="276" r="9" fill="#ff9fb0" opacity=".6"/><circle cx="874" cy="276" r="9" fill="#ff9fb0" opacity=".6"/>
+        <g class="face-ok"><circle cx="818" cy="252" r="6" fill="#2a2420"/><circle cx="862" cy="252" r="6" fill="#2a2420"/><path class="ink" d="M818 278 Q840 296 862 278" fill="none"/></g>
+        <g class="face-dizzy">
+          <path class="ink" d="M818 252 m-2 0 a2 2 0 1 1 4 0 a5 5 0 1 1 -10 0 a8 8 0 1 1 16 0 a11 11 0 1 1 -22 0" fill="none" stroke-width="3"/>
+          <path class="ink" d="M862 252 m-2 0 a2 2 0 1 1 4 0 a5 5 0 1 1 -10 0 a8 8 0 1 1 16 0 a11 11 0 1 1 -22 0" fill="none" stroke-width="3"/>
+          <path class="ink" d="M816 288 q6 -8 12 0 q6 8 12 0 q6 -8 12 0 q6 8 12 0" fill="none" stroke-width="3"/>
+          <path d="M906 214 q8 14 0 20 q-8 -6 0 -20 Z" fill="#7fc4ff" stroke="#3b2a22" stroke-width="2"/>
+        </g>
+      </g>
+    </g>
+    <g class="dizzy-fx s2">
+      <g class="orbit"><text x="760" y="180">✦</text><text x="900" y="170">✦</text><text x="830" y="150">★</text></g>
+      <text class="huh" x="925" y="190">?!</text>
+    </g>
+    <!-- 오른쪽: 완성된 장난감 (프로덕트) -->
+    <g class="toy" filter="url(#crayon)">
+      <path class="ink" d="M1255 330 L1255 302" fill="none"/><circle class="ink" cx="1255" cy="296" r="8" fill="#ff6b6b"/>
+      <rect class="ink" x="1200" y="330" width="110" height="85" rx="12" fill="#8fc1ff"/>
+      <circle cx="1232" cy="368" r="9" fill="#2a2420"/><circle cx="1278" cy="368" r="9" fill="#2a2420"/>
+      <rect class="ink" x="1235" y="390" width="40" height="10" rx="4" fill="#fff"/>
+      <rect class="ink" x="1180" y="415" width="150" height="105" rx="10" fill="#7fa3f5"/>
+      <circle class="ink" cx="1215" cy="540" r="20" fill="#555a66"/><circle class="ink" cx="1295" cy="540" r="20" fill="#555a66"/>
+    </g>
+    <text class="toy-label" x="1255" y="478">프로덕트</text>
+    <g class="sparkle"><text x="1150" y="350">✦</text><text x="1350" y="360">✦</text><text x="1345" y="470">✦</text></g>
+    <!-- 3단계: 이것저것 만든 장난감들 -->
+    <g class="s3">
+      <g class="pop" style="--d:.1s"><g filter="url(#crayon)">
+        <ellipse class="ink" cx="1050" cy="515" rx="50" ry="42" fill="#ffc6d9"/>
+        <ellipse class="ink" cx="1035" cy="400" rx="10" ry="27" fill="#ffc6d9"/><ellipse class="ink" cx="1065" cy="400" rx="10" ry="27" fill="#ffc6d9"/>
+        <circle class="ink" cx="1050" cy="450" r="34" fill="#ffc6d9"/>
+        <circle cx="1038" cy="447" r="5" fill="#2a2420"/><circle cx="1062" cy="447" r="5" fill="#2a2420"/>
+      </g></g>
+      <g class="pop" style="--d:.3s"><g filter="url(#crayon)">
+        <path class="ink" d="M1390 530 L1394 494 L1424 494 L1444 466 L1494 466 L1514 494 L1540 498 L1542 530 Z" fill="#ffd34d"/>
+        <path class="ink" d="M1452 474 L1488 474 L1500 492 L1440 492 Z" fill="#cfe9ff"/>
+        <circle class="ink" cx="1422" cy="536" r="16" fill="#555a66"/><circle class="ink" cx="1510" cy="536" r="16" fill="#555a66"/>
+      </g></g>
+    </g>
+    <!-- 단계 문구 -->
+    <g class="caption">
+      <text class="s1" x="800" y="612">목표: 오픈소스를 두드려 프로덕트로!</text>
+      <text class="s2" x="800" y="612">오픈소스가 너무 많다…?!</text>
+      <text class="s3" x="800" y="612">일단 만들어 보며 필요한 오픈소스를 찾았다</text>
+    </g>
+    <g class="dots"><circle cx="1520" cy="604" r="7"/><circle cx="1544" cy="604" r="7"/><circle cx="1568" cy="604" r="7"/></g>
+  </svg>
+  <aside class="notes">
+    (1) 저희 팀은 오픈소스 도메인입니다. 목표는 기존 오픈소스를 활용하고 개선해서 하나의 프로덕트를 만드는 것이었습니다.
+    (클릭) (2) 그런데 막상 시작해 보니 활용할 수 있는 오픈소스가 너무 많았습니다. 무엇을 골라야 할지부터 막막했습니다.
+    (클릭) (3) 그래서 일단 이것저것 직접 만들어 보면서, 그 과정에서 정말 필요한 오픈소스를 하나씩 찾아갔습니다.
+  </aside>
+</section>
+
+<!-- 05. 아이디어 -->
+
+
 <!-- 04. 손동작 인식 데모: HoloFolge AI Lab + Pinch Tower -->
-<section class="slide" aria-label="04. 손동작 인식" data-title="손동작 인식">
-  <header class="sh"><p class="kicker">데모</p><h2><em>손동작 인식</em></h2></header>
+<section class="slide" aria-label="05. 손동작 인식" data-title="손동작 인식">
+  <header class="sh"><p class="kicker">우리가 만든 데모</p><h2><em>손동작 인식</em></h2><p class="demo-sub"><span class="oss-chip">MediaPipe</span></p></header>
   <div class="duo">
     <figure class="duo-item">
       <div class="duo-media"><video src="assets/ailab.mp4" autoplay muted loop playsinline aria-label="HoloFolge AI Lab 데모 영상"></video></div>
@@ -109,8 +392,8 @@
 </section>
 
 <!-- 06. 기술 ② 관절·리깅 -->
-<section class="slide" aria-label="05. 자동관절 인식 및 적용" data-title="자동관절 인식 및 적용">
-  <header class="sh"><p class="kicker">데모: 관절 적용</p><h2><em>자동관절 인식 및 적용</em></h2></header>
+<section class="slide" aria-label="06. 관절 자동 인식" data-title="관절 자동 인식">
+  <header class="sh"><p class="kicker">우리가 만든 데모</p><h2><em>관절 자동 인식</em></h2><p class="demo-sub multi"><span class="oss-chip">Three.js <small>스키닝·스켈레톤</small></span><span class="oss-chip">AnimatedDrawings <small>그림 리깅</small></span><span class="oss-chip">UniRig <small>자동 리깅</small></span></p></header>
   <figure class="shot shot-demo shot-filled" style="aspect-ratio:2846 / 1514;width:1360px"><video src="assets/world-play.mp4" autoplay muted loop playsinline aria-label="관절이 들어간 캐릭터가 월드에서 움직이는 영상"></video></figure>
   <aside class="notes">
     두 번째 기술은 관절입니다. 먼저 분명히 해 둘 점이 있습니다. 지금 구현한 것은 3D 메시를 자동 리깅하는 것이 아니라, 그림의 실루엣에서 규칙으로 관절 위치를 추정하는 방식입니다. 생성 AI가 만든 3D 메시의 자동 리깅은 별도의 향후 과제입니다.
@@ -122,8 +405,8 @@
 </section>
 
 <!-- 07. 기술 ③ MediaPipe -->
-<section class="slide" aria-label="06. 손가락 대운동회" data-title="손가락 대운동회">
-  <header class="sh"><p class="kicker">데모: 손동작 인식</p><h2><em>손가락 대운동회</em></h2></header>
+<section class="slide" aria-label="07. 손가락 대운동회" data-title="손가락 대운동회">
+  <header class="sh"><p class="kicker">우리가 만든 데모</p><h2><em>손가락 대운동회</em></h2><p class="demo-sub"><span class="oss-chip">MediaPipe</span></p></header>
   <figure class="shot shot-demo shot-filled" style="aspect-ratio:2840 / 1518;width:1360px"><video src="assets/stickman-4.mp4" autoplay muted loop playsinline aria-label="손 동작으로 막대 인형 캐릭터를 조종하는 stickman 영상"></video></figure>
   <aside class="notes">
     세 번째 기술은 실시간 동작 인식입니다. 웹캠 영상은 사용자 PC 안에서만 처리하고, 게임에는 동작 결과만 넘깁니다.
@@ -135,11 +418,11 @@
 </section>
 
 <!-- 08. F1 레이싱 게임 -->
-<section class="slide" aria-label="07. F1 레이싱 게임" data-title="F1 레이싱 게임">
-  <header class="sh"><p class="kicker">데모: 손동작 인식</p><h2><em>F1 레이싱 게임</em></h2></header>
+<section class="slide" aria-label="08. F1 레이싱 게임" data-title="F1 레이싱 게임">
+  <header class="sh"><p class="kicker">우리가 만든 데모</p><h2><em>F1 레이싱 게임</em></h2><p class="demo-sub multi"><span class="oss-chip">MediaPipe <small>손 인식</small></span><span class="oss-chip">Three.js <small>3D</small></span><span class="oss-chip">Rapier <small>물리</small></span><span class="oss-chip">F1 2026 차체 · Qvist_designs <small>CC BY 4.0</small></span><span class="oss-chip">TUMFTM <small>서킷 데이터</small></span><span class="oss-chip">OpenStreetMap <small>주변 지형</small></span><span class="oss-chip">Poly Haven <small>텍스처·하늘</small></span></p></header>
   <div class="media-row">
     <figure class="media-item" style="flex:1.6 1 0;aspect-ratio:2880 / 1800"><video src="assets/f1_video.mp4" autoplay muted loop playsinline aria-label="f1 저장소의 브라우저 레이싱 게임 플레이 영상"></video></figure>
-    <figure class="media-item" style="flex:1.778 1 0;aspect-ratio:3840 / 2160"><video src="assets/f1-playing.mov" autoplay muted loop playsinline aria-label="손동작으로 F1 레이싱 게임을 플레이하는 영상"></video></figure>
+    <figure class="media-item" style="flex:1.778 1 0;aspect-ratio:3840 / 2160"><video src="assets/f1-playing.mp4" autoplay muted loop playsinline aria-label="손동작으로 F1 레이싱 게임을 플레이하는 영상"></video></figure>
   </div>
   <aside class="notes">
     이제 실제로 보여드리겠습니다. 그림을 그리고, 3D 캐릭터로 만들고, 관절이 들어가 걷는 것을 확인한 뒤, 웹캠 앞에서 손과 몸으로 조종하고, 미니게임까지 이어 갑니다.
@@ -150,48 +433,153 @@
 </section>
 
 <!-- 10. 3Design -->
-<section class="slide" aria-label="08. 3Design" data-title="3Design">
-  <header class="sh"><p class="kicker">데모: 2D → 3D 변환</p><h2><em>3Design</em></h2></header>
+<section class="slide" aria-label="09. 3Design" data-title="3Design">
+  <header class="sh"><p class="kicker">우리가 만든 데모</p><h2><em>3Design</em></h2><p class="demo-sub"><span class="oss-chip">Hunyuan3D-2mv</span></p></header>
   <figure class="shot shot-demo shot-filled" style="aspect-ratio:2880 / 1640;width:1277px"><video src="assets/3d.mp4" style="object-position:center bottom" autoplay muted loop playsinline aria-label="3Design 데모 영상: 사진으로 3D 형상을 만드는 화면"></video></figure>
 </section>
 
-<!-- 09. 로드맵 -->
-<section class="slide l-roadmap" aria-label="09. 앞으로의 계획" data-title="앞으로의 계획">
-  <header class="sh"><p class="kicker">로드맵</p><h2>앞으로의 <em>계획</em></h2></header>
-  <ol class="timeline">
-    <li class="tl-now"><p class="tl-tag">지금</p><b>개별 데모</b></li>
-    <li><p class="tl-tag">1</p><b>설계 · OSS 선정</b><span class="st st-future">향후 계획</span></li>
-    <li><p class="tl-tag">2</p><b>통합 MVP</b><span class="st st-future">향후 계획</span></li>
-    <li><p class="tl-tag">3</p><b>온라인 대전</b><span class="st st-exp">실험 중</span></li>
-    <li><p class="tl-tag">4</p><b>플랫폼 확장</b><span class="st st-future">향후 계획</span></li>
-  </ol>
-  <div class="closing">
-    <p class="closing-msg">내가 그린 캐릭터가 3D로 살아 움직이고,<br><em>내 몸짓을 따라 게임 속에서 활동한다.</em></p>
-  </div>
+<!-- 10. 메인 기능: 2D → 3D -->
+<section class="slide" aria-label="10. 메인 기능" data-title="메인 기능" data-steps="2" data-step="1">
+  <header class="sh"><p class="kicker">우리가 선택한 메인 기능</p><h2><em>2D → 3D</em></h2></header>
+  <svg class="oss-scene rise-scene" viewBox="0 150 1600 470" role="img" aria-label="종이 위에 누워 있던 2D 토끼 그림이 3D로 일어서는 그림">
+    <defs>
+      <radialGradient id="vol" cx=".35" cy=".3" r=".8">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+        <stop offset=".55" stop-color="#c9d4ff" stop-opacity=".3"/>
+        <stop offset="1" stop-color="#6f80d6" stop-opacity=".75"/>
+      </radialGradient>
+    </defs>
+    <path class="ink" d="M20 548 Q400 542 800 550 T1580 545" fill="none"/>
+    <!-- 바닥에 놓인 종이 -->
+    <g filter="url(#crayon)"><path class="ink" d="M540 478 L1060 478 L1112 546 L488 546 Z" fill="#fff" stroke-width="3"/></g>
+    <ellipse class="rise-shadow" cx="800" cy="538" rx="95" ry="13" fill="#3b2a22"/>
+    <!-- 토끼: 1단계는 종이에 납작하게 누운 2D, 2단계는 일어선 3D -->
+    <g class="riser">
+      <g filter="url(#crayon)"><ellipse class="ink" cx="765" cy="250" rx="22" ry="60" fill="#fff"/><ellipse class="ink" cx="835" cy="250" rx="22" ry="60" fill="#fff"/><ellipse class="ink" cx="735" cy="445" rx="16" ry="28" fill="#fff" transform="rotate(20 735 445)"/><ellipse class="ink" cx="865" cy="445" rx="16" ry="28" fill="#fff" transform="rotate(-20 865 445)"/><ellipse class="ink" cx="800" cy="452" rx="75" ry="70" fill="#fff"/><ellipse class="ink" cx="765" cy="522" rx="26" ry="12" fill="#fff"/><ellipse class="ink" cx="835" cy="522" rx="26" ry="12" fill="#fff"/><circle class="ink" cx="800" cy="330" r="70" fill="#fff"/>
+        <ellipse cx="765" cy="252" rx="10" ry="40" fill="#ffc6d9"/><ellipse cx="835" cy="252" rx="10" ry="40" fill="#ffc6d9"/>
+      </g>
+      <g class="rise-vol"><ellipse cx="765" cy="250" rx="22" ry="60" fill="url(#vol)"/><ellipse cx="835" cy="250" rx="22" ry="60" fill="url(#vol)"/><ellipse cx="735" cy="445" rx="16" ry="28" fill="url(#vol)" transform="rotate(20 735 445)"/><ellipse cx="865" cy="445" rx="16" ry="28" fill="url(#vol)" transform="rotate(-20 865 445)"/><ellipse cx="800" cy="452" rx="75" ry="70" fill="url(#vol)"/><ellipse cx="765" cy="522" rx="26" ry="12" fill="url(#vol)"/><ellipse cx="835" cy="522" rx="26" ry="12" fill="url(#vol)"/><circle cx="800" cy="330" r="70" fill="url(#vol)"/></g>
+      <g filter="url(#crayon)">
+        <circle cx="775" cy="325" r="7" fill="#2a2420"/><circle cx="825" cy="325" r="7" fill="#2a2420"/>
+        <path d="M794 344 L806 344 L800 351 Z" fill="#ff8fa8"/>
+        <path class="ink" d="M786 358 Q800 368 814 358" fill="none" stroke-width="3"/>
+        <circle cx="758" cy="350" r="10" fill="#ff9fb0" opacity=".55"/><circle cx="842" cy="350" r="10" fill="#ff9fb0" opacity=".55"/>
+      </g>
+    </g>
+    <g class="sparkle s2"><text x="640" y="260">✦</text><text x="950" y="240">✦</text><text x="985" y="420">✦</text></g>
+    <g class="caption">
+      <text class="s1" x="800" y="600">종이 위에 누워 있는 2D 그림</text>
+      <text class="s2" x="800" y="600">땅을 딛고 일어선 3D 캐릭터!</text>
+    </g>
+    <g class="dots"><circle cx="1544" cy="592" r="7"/><circle cx="1568" cy="592" r="7"/></g>
+  </svg>
   <aside class="notes">
-    마지막으로 로드맵입니다. 다음 단계는 기능을 더 붙이는 것이 아니라 통합입니다.
-    지금은 7개 저장소에 개별 데모가 있습니다. 1단계에서 대표 파이프라인을 설계하고, 2D→3D·리깅·동작 인식 후보를 같은 입력으로 비교해 핵심 오픈소스를 고르고, 베이스라인을 잽니다. 2단계에서 하나의 서비스로 통합하고 Before/After로 다시 잽니다.
-    그다음이 온라인 대전 게임입니다. 대결 코드는 있지만 다중 기기 검증 전이라 완성된 기능이 아닙니다.
-    마지막으로 같은 엔진을 말로 꾸미기, 3D 프린팅, 레이싱, 오픈월드로 넓힙니다. 레이싱은 별도 저장소의 확장 실험이며 핵심 서비스와 아직 연결되지 않았습니다.
-    정리하면, Draw2World AI는 그림을 살아 움직이는 캐릭터로 만드는 AI 플랫폼이고, 저희는 지금 2D→3D, 관절, 동작 인식이라는 세 가지 기술 난제를 풀고 있습니다. 감사합니다.
+    (1) 여러 데모를 만들어 본 결과, 저희가 메인으로 선택한 기능은 2D 그림을 3D로 바꾸는 것입니다. 지금 이 토끼는 종이 위에 납작하게 그려진 2D 그림입니다.
+    (클릭) (2) 이 그림이 땅을 딛고 입체로 일어서는 것, 이것이 저희가 집중할 2D → 3D입니다.
+    관절과 동작 인식 같은 나머지 기능은 이 메인 기능 위에 붙는 확장으로 가져가겠습니다.
   </aside>
 </section>
 
-<!-- 10. What's next -->
-<section class="slide" aria-label="10. What's next" data-title="What's next">
-  <header class="sh"><h2>What's next</h2></header>
-  <div class="frame frame-q">
-    <p class="qmark" aria-label="내용 준비 중">?</p>
-  </div>
-  <p class="note">상세 기능명세서 <span class="tbd">[확인 필요]</span></p>
+<!-- 11. 앞으로의 계획: 지도를 보며 걷는 토끼 -->
+<section class="slide" aria-label="11. 앞으로의 계획" data-title="앞으로의 계획" data-steps="2" data-step="1">
+  <header class="sh"><p class="kicker">앞으로의 계획</p></header>
+  <svg class="oss-scene road-scene" viewBox="0 120 1600 520" role="img" aria-label="먼 길 앞에 선 토끼가 지도를 보며 걸어가는 그림">
+    <g filter="url(#crayon)">
+      <path class="ink" d="M0 330 Q200 262 420 318 T900 296 T1300 246 T1600 296" fill="none" stroke-width="3" opacity=".5"/>
+      <path class="ink" d="M110 640 C 400 520, 700 468, 1300 262 L1338 262 C 1010 430, 760 530, 560 640 Z" fill="#f1e2c0" stroke-width="3"/>
+    </g>
+    <path d="M330 640 C 560 520, 860 440, 1318 262" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="22 20" opacity=".9"/>
+    <!-- 목표: 최종 서비스 -->
+    <g filter="url(#crayon)"><path class="ink" d="M1320 264 L1320 186" fill="none"/><path class="ink" d="M1320 188 L1372 204 L1320 222 Z" fill="#ff6b6b"/></g>
+    <text class="goal" x="1320" y="168">최종 서비스</text>
+    <!-- 2단계: 지도 경로와 이정표 -->
+    <g class="s2">
+      <path class="route" d="M330 640 C 560 520, 860 440, 1318 262" fill="none" stroke="#e5484d" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 14" pathLength="100"/>
+      <g class="sign"><path class="ink" d="M590.0 482 L590.0 538" fill="none"/><rect class="ink" x="455" y="438" width="270" height="46" rx="8" fill="#ffe7a8"/><text x="590.0" y="469">① AI 모델 성능 검증</text></g>
+      <g class="sign"><path class="ink" d="M1040.0 374 L1040.0 430" fill="none"/><rect class="ink" x="905" y="330" width="270" height="46" rx="8" fill="#ffe7a8"/><text x="1040.0" y="361">② 오픈소스 내부 개선</text></g>
+      <g class="sign"><path class="ink" d="M1145.0 240 L1145.0 296" fill="none"/><rect class="ink" x="1010" y="196" width="270" height="46" rx="8" fill="#ffe7a8"/><text x="1145.0" y="227">③ 서비스 목적·범위</text></g>
+    </g>
+    <!-- 토끼 -->
+    <g transform="translate(250 600) scale(.52) translate(-800 -532)">
+      <g class="walker">
+        <ellipse cx="800" cy="534" rx="95" ry="13" fill="#3b2a22" opacity=".15"/>
+        <g filter="url(#crayon)"><ellipse class="ink" cx="765" cy="250" rx="22" ry="60" fill="#fff"/><ellipse class="ink" cx="835" cy="250" rx="22" ry="60" fill="#fff"/><ellipse class="ink" cx="800" cy="452" rx="75" ry="70" fill="#fff"/><ellipse class="ink" cx="765" cy="522" rx="26" ry="12" fill="#fff"/><ellipse class="ink" cx="835" cy="522" rx="26" ry="12" fill="#fff"/><circle class="ink" cx="800" cy="330" r="70" fill="#fff"/>
+          <ellipse cx="765" cy="252" rx="10" ry="40" fill="#ffc6d9"/><ellipse cx="835" cy="252" rx="10" ry="40" fill="#ffc6d9"/>
+        </g>
+        <g><ellipse cx="765" cy="250" rx="22" ry="60" fill="url(#vol)"/><ellipse cx="835" cy="250" rx="22" ry="60" fill="url(#vol)"/><ellipse cx="800" cy="452" rx="75" ry="70" fill="url(#vol)"/><ellipse cx="765" cy="522" rx="26" ry="12" fill="url(#vol)"/><ellipse cx="835" cy="522" rx="26" ry="12" fill="url(#vol)"/><circle cx="800" cy="330" r="70" fill="url(#vol)"/></g>
+        <g filter="url(#crayon)">
+          <circle cx="775" cy="325" r="7" fill="#2a2420"/><circle cx="825" cy="325" r="7" fill="#2a2420"/>
+          <path d="M794 344 L806 344 L800 351 Z" fill="#ff8fa8"/>
+          <path class="ink" d="M786 358 Q800 368 814 358" fill="none" stroke-width="3"/>
+          <circle cx="758" cy="350" r="10" fill="#ff9fb0" opacity=".55"/><circle cx="842" cy="350" r="10" fill="#ff9fb0" opacity=".55"/>
+        </g>
+        <!-- 1단계: 손을 이마에 대고 먼 곳을 바라봄 -->
+        <g class="s1" filter="url(#crayon)"><ellipse class="ink" cx="870" cy="290" rx="16" ry="30" fill="#fff" transform="rotate(-60 870 290)"/><ellipse class="ink" cx="730" cy="450" rx="16" ry="28" fill="#fff" transform="rotate(20 730 450)"/></g>
+        <!-- 2단계: 두 손으로 지도를 펼쳐 듦 -->
+        <g class="s2" filter="url(#crayon)">
+          <path class="ink" d="M712 392 L758 404 L800 392 L842 404 L888 392 L888 480 L842 492 L800 480 L758 492 L712 480 Z" fill="#fff3c4"/>
+          <path class="ink" d="M758 404 L758 492 M800 392 L800 480 M842 404 L842 492" fill="none" stroke-width="2.5"/>
+          <path d="M728 470 Q770 430 810 452 T872 410" fill="none" stroke="#e5484d" stroke-width="4" stroke-dasharray="3 9" stroke-linecap="round"/>
+          <path d="M864 402 l14 14 m0 -14 l-14 14" stroke="#e5484d" stroke-width="4" stroke-linecap="round"/>
+          <ellipse class="ink" cx="706" cy="440" rx="14" ry="22" fill="#fff"/><ellipse class="ink" cx="894" cy="440" rx="14" ry="22" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+    <g class="caption">
+      <text class="s1" x="800" y="622">갈 길은 아직 멀어 보이지만…</text>
+      <text class="s2" x="800" y="622">서두르지 않고, 지도를 보며 차근차근</text>
+    </g>
+    <g class="dots"><circle cx="1544" cy="614" r="7"/><circle cx="1568" cy="614" r="7"/></g>
+  </svg>
   <aside class="notes">
-    “구현 완료”도 개별 저장소 기준이며, 전체 흐름이 하나로 통합된 것은 아니다.
-    3D 캐릭터 변환 — 규칙 기반은 실루엣 볼륨 생성(브라우저), 생성 AI는 Era3D·CharacterGen 다중 시점 2D 출력까지 실험, 3D 메시는 미완료.
-    동작 인식 조종 — MediaPipe 손 21점·몸 33점 → 필터 → 제스처 → 게임 입력 (개별 저장소).
-    온라인 대결 — PeerJS/WebRTC 코드 존재, 다중 기기 검증 필요.
-    말로 꾸미기 — 로컬 LLM이 자연어를 구조화 명령으로 변환 (후순위).
+    (1) 정리하겠습니다. 저희는 다양한 오픈소스를 탐색하고 직접 구현하며 가능성을 검증했고, 그 결과 2D 이미지를 편집 가능한 3D 모델로 변환하는 기술을 핵심 과제로 선정했습니다. 최종 서비스까지는 아직 갈 길이 멀어 보입니다.
+    (클릭) (2) 그래서 서두르기보다 지도를 보며 차근차근 가려고 합니다. 앞으로는 AI 모델의 성능 검증과 오픈소스 내부 개선에 집중하고, 이를 기반으로 최종 서비스의 목적과 범위를 구체화하겠습니다. 감사합니다.
   </aside>
 </section>
+
+<!-- 12. 감사합니다 -->
+<section class="slide s-thanks l-cover" aria-label="12. 감사합니다" data-title="감사합니다">
+  <div class="cover-body">
+    <h1 class="cover-q"><em>감사합니다</em></h1>
+    <p class="ty-sub">질문과 의견을 기다리고 있어요</p>
+  </div>
+  <div class="ty-bunny" aria-hidden="true">
+    <span class="walker-shadow"></span>
+    <svg class="ty-bunny-art" viewBox="0 0 250 400">
+      <defs>
+        <radialGradient id="tyb3Body" cx=".38" cy=".3" r=".78"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#f6f2f8"/><stop offset=".8" stop-color="#ddd4e8"/><stop offset="1" stop-color="#bfb3d2"/></radialGradient>
+        <radialGradient id="tyb3Ear" cx=".35" cy=".28" r=".85"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#efe9f4"/><stop offset="1" stop-color="#c7bcd8"/></radialGradient>
+        <radialGradient id="tyb3Inner" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#ffd6e2"/><stop offset="1" stop-color="#f08fac"/></radialGradient>
+        <radialGradient id="tyb3Tummy" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#fffaf6"/><stop offset="1" stop-color="#f3e6ee"/></radialGradient>
+        <radialGradient id="tyb3Cheek"><stop offset="0" stop-color="#ff8fa8" stop-opacity=".75"/><stop offset="1" stop-color="#ff8fa8" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="92" cy="95" rx="24" ry="70" fill="url(#tyb3Ear)" transform="rotate(-10 92 160)"/>
+      <ellipse cx="158" cy="95" rx="24" ry="70" fill="url(#tyb3Ear)" transform="rotate(10 158 160)"/>
+      <ellipse cx="92" cy="102" rx="10" ry="46" fill="url(#tyb3Inner)" transform="rotate(-10 92 160)"/>
+      <ellipse cx="158" cy="102" rx="10" ry="46" fill="url(#tyb3Inner)" transform="rotate(10 158 160)"/>
+      <ellipse cx="125" cy="300" rx="60" ry="56" fill="url(#tyb3Body)"/>
+      <ellipse cx="125" cy="312" rx="32" ry="30" fill="url(#tyb3Tummy)"/>
+      <g class="b-legs"><ellipse cx="95" cy="360" rx="30" ry="15" fill="url(#tyb3Ear)"/><ellipse cx="155" cy="360" rx="30" ry="15" fill="url(#tyb3Ear)"/></g>
+      <g class="b-arms"><ellipse cx="80" cy="290" rx="13" ry="23" fill="url(#tyb3Ear)" transform="rotate(25 80 290)"/><ellipse cx="170" cy="290" rx="13" ry="23" fill="url(#tyb3Ear)" transform="rotate(-25 170 290)"/></g>
+      <ellipse cx="125" cy="205" rx="82" ry="66" fill="url(#tyb3Body)"/>
+      <ellipse cx="96" cy="170" rx="26" ry="13" fill="#fff" opacity=".8" transform="rotate(-20 96 170)"/>
+      <ellipse cx="98" cy="200" rx="8" ry="11" fill="#2a2420"/><ellipse cx="152" cy="200" rx="8" ry="11" fill="#2a2420"/>
+      <circle cx="100.5" cy="195.5" r="3" fill="#fff"/><circle cx="154.5" cy="195.5" r="3" fill="#fff"/>
+      <path d="M117 222 L133 222 L125 230 Z" fill="#f2829f"/>
+      <path d="M112 238 Q125 247 138 238" fill="none" stroke="#3b2a22" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="76" cy="228" r="18" fill="url(#tyb3Cheek)"/><circle cx="174" cy="228" r="18" fill="url(#tyb3Cheek)"/>
+    </svg>
+  </div>
+  <p class="cover-meta">SSAFY 자율프로젝트 - 오픈소스 | Team 워커홀릭</p>
+  <aside class="notes">
+    지금까지 B206 팀 워커홀릭의 중간발표였습니다. 감사합니다. 질문 받겠습니다.
+  </aside>
+</section>
+
+
+
+
+
 
 </div><!-- /stage -->
 </div><!-- /deck -->

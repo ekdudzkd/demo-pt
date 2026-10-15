@@ -17,7 +17,16 @@
   var STORE_KEY = "d2w-slide";
   var NOTES_KEY = "d2w-notes";
 
-  function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+  /* ---- 오른쪽 아래 쪽 번호: 현재 / 전체 (표지 제외) ---- */
+  slides.forEach(function (sl, i) {
+    if (sl.classList.contains("s-opening")) return;
+    var p = document.createElement("p");
+    p.className = "page-no";
+    p.setAttribute("aria-hidden", "true");
+    p.textContent = (i + 1) + " / " + total;
+    sl.appendChild(p);
+  });
 
   /* ---- 1920×1080 스테이지를 뷰포트에 맞춤 ---- */
   function fit() {
@@ -25,24 +34,13 @@
     document.documentElement.style.setProperty("--scale", String(s));
   }
 
-  /* ---- 팀 헤더 ---- */
-  var TEAM_NAME = "팀 워커홀릭";
-  slides.forEach(function (sl, i) {
-    if (sl.classList.contains("s-opening")) return;
-    var h = document.createElement("div");
-    h.className = "team-bar";
-    h.textContent = TEAM_NAME;
-    sl.insertBefore(h, sl.firstChild);
-  });
-
-  /* ---- 슬라이드 하단 푸터 ---- */
-  slides.forEach(function (sl, i) {
-    if (sl.classList.contains("s-opening")) return;
-    var f = document.createElement("footer");
-    f.className = "sf";
-    f.setAttribute("aria-hidden", "true");
-    f.innerHTML = "<span><b>Draw2World AI</b> · " + (sl.getAttribute("data-title") || "") + "</span><span>" + pad(i + 1) + " / " + pad(total) + "</span>";
-    sl.appendChild(f);
+  /* ---- 동영상 재생 속도 (전체 2배속) ---- */
+  var VIDEO_RATE = 2;
+  Array.prototype.forEach.call(stage.querySelectorAll("video"), function (v) {
+    function apply() { v.defaultPlaybackRate = VIDEO_RATE; v.playbackRate = VIDEO_RATE; }
+    apply();
+    v.addEventListener("loadedmetadata", apply);
+    v.addEventListener("play", apply);
   });
 
   /* ---- 이동 ---- */
@@ -54,8 +52,10 @@
   }
   function clamp(i) { return Math.max(0, Math.min(total - 1, i)); }
 
-  function show(i, fromHash) {
+  function show(i, fromHash, back) {
     i = clamp(i);
+    // 단계가 있는 슬라이드(data-steps): 앞으로 오면 1단계, 뒤로 오면 마지막 단계부터
+    if (slides[i].hasAttribute("data-steps")) slides[i].setAttribute("data-step", back ? stepsOf(slides[i]) : 1);
     slides.forEach(function (sl, k) {
       var on = k === i;
       sl.classList.toggle("is-active", on);
@@ -73,8 +73,18 @@
     try { localStorage.setItem(STORE_KEY, String(i)); } catch (e) {}
     renderNotes();
   }
-  function next() { if (current < total - 1) show(current + 1); }
-  function prev() { if (current > 0) show(current - 1); }
+  function stepsOf(sl) { return parseInt(sl.getAttribute("data-steps"), 10) || 1; }
+  function stepOf(sl) { return parseInt(sl.getAttribute("data-step"), 10) || 1; }
+  function next() {
+    var sl = slides[current];
+    if (stepOf(sl) < stepsOf(sl)) { sl.setAttribute("data-step", stepOf(sl) + 1); return; }
+    if (current < total - 1) show(current + 1);
+  }
+  function prev() {
+    var sl = slides[current];
+    if (stepOf(sl) > 1) { sl.setAttribute("data-step", stepOf(sl) - 1); return; }
+    if (current > 0) show(current - 1, false, true);
+  }
 
   /* ---- 발표자 메모 ---- */
   function renderNotes() {
